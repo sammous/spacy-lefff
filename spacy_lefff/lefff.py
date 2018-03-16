@@ -38,7 +38,7 @@ class LefffLemmatizer(object):
     def lemmatize(self, text, pos):
         text = text.lower() if pos != 'PROPN' else text
         try:
-            if (text in self.lemma_dict) and (pos in self.lemma_dict[text]):
+            if (text in self.lemma_dict) and (SPACY_LEFFF_DIC[pos] in self.lemma_dict[text]):
                 return self.lemma_dict[text][SPACY_LEFFF_DIC[pos]]
         except:
             #if nothing was matched in leff lemmatizer, notify it
