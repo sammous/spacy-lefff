@@ -1,0 +1,1 @@
+from lefff import LefffLemmatizer

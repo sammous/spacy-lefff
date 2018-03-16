@@ -21,7 +21,7 @@ nlp.add_pipe(french_lemmatizer, name='lefff', after='parser')
 ```
 ## Credits
 
-[Sagot,2010] Sagot, B. (2010). The Lefff, a freely available and large-coverage morphological and syntactic lexicon for French. In 7th international conference on Language Resources and Evaluation (LREC 2010).
+Sagot, B. (2010). [The Lefff, a freely available and large-coverage morphological and syntactic lexicon for French](https://hal.inria.fr/inria-00521242/). In 7th international conference on Language Resources and Evaluation (LREC 2010).
 
 Benoît Sagot Webpage about LEFFF<br/>
 http://alpage.inria.fr/~sagot/lefff-en.html<br/>
