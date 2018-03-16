@@ -4,5 +4,7 @@ python:
   - "3.5"
 install:
   - pip install -r requirements-dev.txt
+before_script:
+  - python -m spacy download fr
 script:
   - pytest -v
