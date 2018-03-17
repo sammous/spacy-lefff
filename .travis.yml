@@ -1,5 +1,6 @@
 language: python
 cache: pip
+sudo: true
 python:
   - "2.7"
   - "3.5"
@@ -8,4 +9,4 @@ install:
 before_script:
   - python -m spacy download fr
 script:
-  - python -m py.test
+  - py.test --cov=./
