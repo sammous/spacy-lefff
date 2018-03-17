@@ -6,7 +6,6 @@ from __future__ import unicode_literals
 from pathlib import Path
 from setuptools import setup, find_packages
 
-
 def setup_package():
     package_name = 'spacy_lefff'
     root = Path(__file__).parent.resolve()
@@ -25,11 +24,24 @@ def setup_package():
         url='https://github.com/sammous/spacy-lefff',
         version='0.1',
         license='MIT',
-        packages=find_packages(),
+        packages=find_packages(exclude=['tests']),
+        tests_require=['pytest', 'pytest-cov'],
         install_requires=[
             'spacy>=2.0.0,<3.0.0'],
         zip_safe=False,
-        tests_require=['pytest']
+        classifiers=[
+            'Programming Language :: Python',
+            'Programming Language :: Python :: 2',
+            'Programming Language :: Python :: 3',
+            'Operating System :: OS Independent',
+            'Development Status :: 4 - Beta',
+            'Natural Language :: English',
+            'Environment :: Web Environment',
+            'Intended Audience :: Developers',
+            'Topic :: Internet :: WWW/HTTP',
+            'License :: OSI Approved :: MIT License',
+            'Topic :: Software Development :: Libraries :: Python Modules',
+        ],
     )
 
 

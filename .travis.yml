@@ -8,4 +8,6 @@ install:
 before_script:
   - python -m spacy download fr
 script:
-  - py.test --cov=./
+  - "coverage run --source=spacy_lefff setup.py test"
+after_success:
+  coveralls

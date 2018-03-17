@@ -1,4 +1,4 @@
-# spacy-lefff : Custom French lemmatizer pipeline based on Lefff for spacy [![Build Status](https://travis-ci.org/sammous/spacy-lefff.svg?branch=master)](https://travis-ci.org/sammous/spacy-lefff)
+# spacy-lefff : Custom French lemmatizer pipeline based on Lefff for spacy [![Build Status](https://travis-ci.org/sammous/spacy-lefff.svg?branch=master)](https://travis-ci.org/sammous/spacy-lefff)[![Coverage Status](https://codecov.io/gh/sammous/spacy-lefff/badge.svg?branch=master)](https://codecov.io/gh/sammous/spacy-lefff?branch=master)
 
 [spacy v2.0](https://spacy.io/usage/v2) extension and pipeline component for adding a French lemmatizer based on Lefff.
 
