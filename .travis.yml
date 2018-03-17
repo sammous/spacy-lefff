@@ -1,4 +1,5 @@
 language: python
+cache: pip
 python:
   - "2.7"
   - "3.5"
@@ -7,4 +8,4 @@ install:
 before_script:
   - python -m spacy download fr
 script:
-  - py.test -v
+  - python -m py.test
