@@ -7,4 +7,4 @@ install:
 before_script:
   - python -m spacy download fr
 script:
-  - pytest -v
+  - py.test -v
