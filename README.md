@@ -18,6 +18,9 @@ from spacy_lefff import LefffLemmatizer
 nlp = spacy.load('fr')
 french_lemmatizer = LefffLemmatizer()
 nlp.add_pipe(french_lemmatizer, name='lefff', after='parser')
+doc = nlp(u"Paris est une ville très chère.")
+for d in doc:
+  print(d.text, d.pos_, d._.lefff_lemma, d.tag_)
 ```
 ## Credits
 
