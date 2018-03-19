@@ -6,8 +6,6 @@
 
 `spacy-lefff` requires `spacy` v2.0.0 or higher.
 
-(not yet deployed to `PyPi`)
-
 ```
 pip install spacy-lefff
 ```
