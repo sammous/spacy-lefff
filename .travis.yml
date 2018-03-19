@@ -2,27 +2,19 @@ language: python
 cache: pip
 sudo: true
 python:
-  - "2.7"
+  - '2.7'
 install:
   - pip install -r requirements-dev.txt
 before_script:
   - python -m spacy download fr
 script:
-  - "py.test --cov=./"
+  - py.test --cov=./
 after_success:
   - codecov
 deploy:
   provider: pypi
   user: sammous
   password:
-    secure:
-      "Kv8zWpk43xBVzxjI5Pn3iMFrK9uT8gc3LVkU5dukszoCZCLqWkVivR2TrI/EBWK1P4BfwcTV5E/
-      jVXDhoS5uR1aztk3krNcRBBNbZoUfy9wv2LhvtCZ693BF8j3DS6GVu0PDSbHUOO3mHSaGZ3Gh38P
-      GNdMnD918XB3EWelCV1gB5gr5USCAY3pkhiz+LN0OwTb6YGQzU6bvy4aNEAx+g4TJaSMXxOhCdMd
-      V5rvkINx7URWXGlu9GLdthGFy1j7YgnGkqu382dAklovujQIxutMrZmfEgObSPFnSiNeSU3siKVf
-      fgbU+FesuO8sOWxpIYQZJsWtH5nYfWVi4XuoHRj6e1KsyngBNDE3nHJqKlOOds50I870aHNCSv4r
-      bDu1vCllIjRQ8c4sbkh64lmHZAOn6wODTVJi7cex4m38HtoikTuTRBYDAqZ9GFvQ5a2p3Q025Hd2
-      0yPYlJfUKdOcnF7eaCZi00bofpeEYgtfq+hR7VcfKiPa4nHlsx5NNvuycOaOAECOsL2CUV32ue8/
-      cJDDjIlx4eTIRYR2+Xrof6HKJm2c8ei8DL40+13dzI+V1YqN8wI="
+    secure: ujtXZobhqqAgUs3Q6V1p5nvT2P6Jyfh7cXEiwJoofOcji/0NDihkC2VLLAEmBDJmeyG2dUQcc6t7pSlG5IXL8j0iQY1esULhPHIgOE5USRgYOk0HLIGgbBUuaX6lgnYm2xSLEPenP8veb1oGidzoGo2rA1tMhDi7hMeYgt3E3NqoF/Vb6Erp9cgwsVQ6HCWRic6fXA0DctgSUOODNQ/7rDbztmc9OG8MJGS1JaSc4kAtYdbU5Hicrnd254eYe5II3V34HUUuLxNaFkg1qDgvd4uBQemQDSPJIPXiFogtt5smeLsTxUXODEC9oqd/9RwgXNFqxhlcC5sAVrlJ2WU9MUtJv7I4/uLAtp6OfxT0X24jNSq85bjeSfM+irSE4k0JJ+QEHsLmbMWEoyZ/IXqY0kdSbzVGG/HirYqM4vzKLqC5GhG1AeoaMu5FCh+MChdCqmI1xL7luFyfsgkHO7LxGPSMMxc9U20cDEp7Hleh1Z754jmfcxYoCOlwU92irEFlgBZeVKMAq2SgQC2gBFoARC07brxZK1Ac8wuHpAw9CedWUCC3uNX8f7MPmcI/U4tVWqQvoT9aSfb218mL1wbCbSFJymNEao4zq1zOteLs9rX8y0/90WHvfU8RhVSlwIzRs5oX3euFCdaQPIciOfc14ywHPBhBHiu+m2N+6qvyYQ8=
   on:
-    branch: master
+    tags: true
