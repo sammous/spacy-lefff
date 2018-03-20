@@ -32,14 +32,14 @@ class LefffLemmatizer(object):
             LOGGER.info('Reading lefff data...')
             for line in lefff_file:
                 els = line.split('\t')
-                self.lemma_dict[els[0]] = {els[1]: els[2]}
+                self.lemma_dict[(els[0], els[1])] = els[2]
         LOGGER.info('Successfully loaded lefff lemmatizer')
 
     def lemmatize(self, text, pos):
         text = text.lower() if pos != 'PROPN' else text
         try:
-            if (text in self.lemma_dict) and (SPACY_LEFFF_DIC[pos] in self.lemma_dict[text]):
-                return self.lemma_dict[text][SPACY_LEFFF_DIC[pos]]
+            if (pos in SPACY_LEFFF_DIC) and ((text, SPACY_LEFFF_DIC[pos]) in self.lemma_dict):
+                return self.lemma_dict[(text, SPACY_LEFFF_DIC[pos])]
         except:
             #if nothing was matched in leff lemmatizer, notify it
             return None
