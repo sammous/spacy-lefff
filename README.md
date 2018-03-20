@@ -13,6 +13,7 @@ pip install spacy-lefff
 ## Usage
 
 Import and initialize your `nlp` spacy object and add the custom component after it parsed the document so you can benefit the POS tags.
+Be aware to work with `UTF-8`.
 
 ```python
 import spacy
