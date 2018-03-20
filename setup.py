@@ -1,7 +1,6 @@
 
 #!/usr/bin/env python
 # coding: utf8
-from __future__ import unicode_literals
 
 from pathlib import Path
 from setuptools import setup, find_packages
@@ -25,6 +24,7 @@ def setup_package():
         version='0.1',
         license='MIT',
         packages=find_packages(exclude=['tests']),
+        package_data={'spacy_lefff': ['data/*']},
         tests_require=['pytest', 'pytest-cov'],
         install_requires=[
             'spacy>=2.0.0,<3.0.0'],
