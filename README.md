@@ -15,6 +15,7 @@ pip install spacy-lefff
 Import and initialize your `nlp` spacy object and add the custom component after it parsed the document so you can benefit the POS tags.
 
 ```python
+import spacy
 from spacy_lefff import LefffLemmatizer
 
 nlp = spacy.load('fr')
