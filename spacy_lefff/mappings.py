@@ -12,4 +12,5 @@ SPACY_LEFFF_DIC = {'ADJ': 'adj',
 'PRON': 'cln',
 'PROPN': 'np',
 'NOUN': 'nc',
-'VERB': 'v'}
+'VERB': 'v',
+'PUNCT': 'poncts'}
