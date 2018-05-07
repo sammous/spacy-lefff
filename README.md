@@ -2,6 +2,11 @@
 
 [spacy v2.0](https://spacy.io/usage/v2) extension and pipeline component for adding a French lemmatizer based on Lefff.
 
+## Description
+
+This package allows to bring Lefff lemmatization and part-of-speech tagging to a spaCy custom pipeline.
+When POS tagging and Lemmatizaion are combined inside a pipeline, it improves your text preprocessing for French compared to the built-in spaCy French processing.
+
 ## Installation
 
 `spacy-lefff` requires `spacy` <= v2.0.9.
