@@ -22,12 +22,13 @@ class LefffLemmatizer(object):
     and Evaluation (LREC 2010), Istanbul, Turkey
     """
 
-    def __init__(self, data_dir=DATA_DIR, lefff_file_name=LEFFF_FILE_NAME):
+    def __init__(self, data_dir=DATA_DIR, lefff_file_name=LEFFF_FILE_NAME, after_melt=False):
         LOGGER.info('New LefffLemmatizer instantiated.')
         # register your new attribute token._.lefff_lemma
         Token.set_extension('lefff_lemma', default=None)
         #In memory lemma mapping
         self.lemma_dict = {}
+        self.after_melt = after_melt
         with io.open(os.path.join(data_dir, lefff_file_name), encoding='utf-8') as lefff_file:
             LOGGER.info('Reading lefff data...')
             for line in lefff_file:
@@ -46,6 +47,7 @@ class LefffLemmatizer(object):
 
     def __call__(self, doc):
         for token in doc:
-            lemma = self.lemmatize(token.text, token.pos_)
+            t = token._.melt_tagger if self.after_melt else token.pos_
+            lemma = self.lemmatize(token.text, t)
             token._.lefff_lemma = lemma
         return doc
