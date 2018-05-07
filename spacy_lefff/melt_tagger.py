@@ -30,7 +30,7 @@ import optparse
 import unicodedata
 import subprocess
 from collections import defaultdict
-
+import logging
 
 WD_TAG_RE = re.compile(r'^(.+)/([^\/]+)$')
 CAPONLYLINE_RE = re.compile(r'^([^a-z]+)$')
@@ -56,6 +56,14 @@ from json import dumps, loads
 import io
 from spacy.tokens import Token as tk
 from lefff import LefffLemmatizer
+
+LOGGER = logging.getLogger(__name__)
+
+DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
+MODELS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'models/fr')
+
+LEXICON_FILE = os.path.join(MODELS_DIR, 'lexicon.json')
+TAG_DICT = os.path.join(MODELS_DIR, 'tag_dict.json')
 
 # extra options dict for feature selection
 feat_select_options = {
@@ -84,21 +92,6 @@ feat_select_options = {
     'ffthrsld':1, # min feat occ: will discard any features occurring (strictly) less than ffthrsld times in the training data
     'norm':0, # normalization (0=none, 1=L1, 2=L2)
     }
-if options.feature_selection:
-    for f_opt in options.feature_selection.split(","):
-        name, value = f_opt.split("=")
-        feat_select_options[name] = eval(value)
-options_string = ""
-if options.train:
-    feat_opt_file = codecs.open(options.model+"/feat_options",'w',options.encoding)
-    print >> feat_opt_file, ",".join(["%s=%d"%(f,feat_select_options[f]) for f in feat_select_options])
-
-
-DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
-MODELS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'models/fr')
-
-LEXICON_FILE = os.path.join(MODELS_DIR, 'lexicon.json')
-TAG_DICT = os.path.join(MODELS_DIR, 'tag_dict.json')
 
 ############################ pos_tagger.py ############################
 
@@ -106,9 +99,9 @@ class POSTagger:
 
     def __init__(self, data_dir=DATA_DIR, lexicon_file_name=LEXICON_FILE, tag_file_name=TAG_DICT, print_probas=False):
         tk.set_extension('melt_tagger', default=None)
-        print >> sys.stderr, "  TAGGER: Loading lexicon..."
+        LOGGER.info("  TAGGER: Loading lexicon...")
         self.lex_dict = unserialize(lexicon_file_name)
-        print >> sys.stderr, "  TAGGER: Loading tags..."
+        LOGGER.info("  TAGGER: Loading tags...")
         self.tag_dict = unserialize(tag_file_name)
         self.classifier = MaxEntClassifier()
         self.cache = {}
@@ -127,7 +120,7 @@ class POSTagger:
 
 
     def train_model(self,_file, model_path, prior_prec=1, maxit=100, repeat=5, classifier="multitron", feat_options=feat_select_options, dump_raw_model=False,dump_training_data=False,zh_mode = False,norm=0):
-        print >> sys.stderr, "  TAGGER (TRAIN): Generating training data...          ",
+        LOGGER.info("  TAGGER (TRAIN): Generating training data...          ")
         reader = "Brown"
         if zh_mode :
             reader = "Weighted"
@@ -136,8 +129,8 @@ class POSTagger:
                                                        dirpath=model_path,
                                                        dump_training_data=dump_training_data,
                                                        Reader=reader)
-        print >> sys.stderr, "  TAGGER (TRAIN): Generating training data: done          "
-        print >> sys.stderr, "  TAGGER (TRAIN): Training POS model..."
+        LOGGER.info("  TAGGER (TRAIN): Generating training data: done          ")
+        LOGGER.info("  TAGGER (TRAIN): Training POS model...")
         self.classifier.train_megam( train_inst_file,
                                      repeat=repeat,
                                      classifier=classifier,
@@ -147,7 +140,7 @@ class POSTagger:
                                      dirpath=model_path,
                                      norm=norm)
         self.classifier.dump( model_path )
-        print >> sys.stderr, "  TAGGER (TRAIN): Clean-up data file..."
+        LOGGER.info( "  TAGGER (TRAIN): Clean-up data file...")
         os.unlink(train_inst_file)
         print  >> sys.stderr, "  TAGGER (TRAIN): Clean-up data file: done"
         return
@@ -212,8 +205,6 @@ class POSTagger:
         ''' N-best breath search for the best tag sequence for each sentence'''
         # maintain N-best sequences of tagged tokens
         sequences = [([],0.0)]  # log prob.
-        print("tokens..")
-        print(len(self.lex_dict))
         for i,token in enumerate(tokens):
             n_best_sequences = []
             # cache static features
@@ -262,92 +253,13 @@ class POSTagger:
             # keep N best
             sequences = n_best_sequences[-beam_size:]
         # return sequence with highest prob.
-        print(sequences)
         best_sequence = sequences[-1][0]
         # print >> sys.stderr, "Best tok seq:", [(t.string,t.label) for t in best_sequence]
         return best_sequence
 
 
-    def tag_token_dag(self, tokens, feat_options=feat_select_options, beam_size=3):
-        ''' N-best breath search for the best tag sequence for each sentence with segmentation ambiguities'''
-        # maintain N-best sequences of tagged tokens
-        sequences = [([],0.0)]  # log prob.
-        end_index = max([tok.position[1] for tok in tokens])
-        while True:
-            #on conserve les sequences arrivées au bout
-            n_best_sequences = filter(lambda x:len(x[0])>0 and x[0][-1].position[1]==end_index, sequences)
-            #optimisation possible
-            last_indexes = [ s[0][-1].index  for s in sequences if len(s[0])>0 ]
-            if last_indexes == [] :
-                last_indexes = [None]
-            suivants = set([tok for i in last_indexes for tok in suivants_in_dag(tokens,i)])
-
-            if len(suivants) == 0 :
-                break
-            # cache static features
-            for suivant in suivants :
-                i = suivant.index
-                #cached_inst = DagInstance( label=tokens[i].label,
-                #                    index=i, tokens=tokens,
-                #                    feat_selection=feat_options,
-                #                    lex_dict=self.lex_dict,
-                #                    tag_dict=self.tag_dict,
-                #                    cache=self.cache )
-                #cached_inst.get_static_features()
-                ## get possible tags: union of tags found in tag_dict and
-                # lex_dict
-                wd = suivant.string
-                wasCap = suivant.wasCap
-                legit_tags1 = self.tag_dict.get(wd,{})
- #               legit_tags2 = self.lex_dict.get(wd,{})
-                legit_tags2 = {} # self.lex_dict.get(wd,{})
- #               print >> sys.stderr, "legit_tags1: ", [t for t in legit_tags1]
-                for j,seq in enumerate(sequences):
-                    seq_j,log_pr_j = sequences[j]
-                    if len(seq_j) > 0 and seq_j[-1].position[1] != suivant.position[0] :
-                        continue
-                    tokens_j = seq_j+filter_tokens(tokens,i) # tokens with previous labels
-
-
-                    # classify token
-                    inst = DagInstance( label=tokens[i].label,
-                                     index=len(seq_j), tokens=tokens_j,
-                                     feat_selection=feat_options,
-                                     lex_dict=self.lex_dict,
-                                     tag_dict=self.tag_dict,
-                                     cache=self.cache )
-                    #inst.fv = cached_inst.fv[:]
-                    inst.get_static_features()
-                    inst.get_sequential_features()
-                    label_pr_distrib = self.classifier.class_distribution(inst.fv)
-#                    import IPython
-#                    IPython.embed()
-                    # extend sequence j with current token
-                    for (cl,pr) in label_pr_distrib:
-                        # make sure that cl is a legal tag
-                        if legit_tags1 or legit_tags2:
-                            if (cl not in legit_tags1) and (cl not in legit_tags2):
-                                continue
-                        labelled_token = Token(string=suivant,pos=suivant.pos,\
-                                       comment=suivant.comment,\
-                                       wasCap=wasCap,\
-                                       position=suivant.position,\
-                                       index=suivant.index,\
-                                       label=cl,proba=pr,label_pr_distrib=label_pr_distrib)
-                        n_best_sequences.append((seq_j+[labelled_token],log_pr_j+math.log(pr)))
-            # sort sequences
-            n_best_sequences.sort( key=lambda x:x[1]/len(x[0]))# operator.itemgetter(1) )
-            debug_n_best_sequence(n_best_sequences)
-            # keep N best
-            sequences = n_best_sequences[-beam_size:]
-        # return sequence with highest prob.
-        best_sequence = sequences[-1][0]
-        #print >> sys.stderr, "Best tok seq:", [(t.string,t.label) for t in best_sequence]
-        return best_sequence
-
-
     def __call__(self, doc, handle_comments=False, feat_options=feat_select_options, beam_size=3, lowerCaseCapOnly=False,zh_mode=False):
-        print >> sys.stderr, "  TAGGER: POS Tagging..."
+        LOGGER.info("  TAGGER: POS Tagging...")
         t0 = time.time()
         # process sentences
         s_ct = 0
@@ -358,8 +270,7 @@ class POSTagger:
         else:
             split_re = re.compile(r' ')
             token_re = re.compile(r'[^ ]+')
-        line = doc.text
-        print(line)
+        line = " ".join([w.text for w in doc])
         wasCapOnly = 0
         if (lowerCaseCapOnly and len(line) > 10):
             wasCapOnly = CAPONLYLINE_RE.match(line)
@@ -369,7 +280,7 @@ class POSTagger:
             wasCapOnly = 0
         if (wasCapOnly):
             line = line.lower()
-#                print >> sys.stderr, "CAPONLY: "+line
+#                LOGGER.info( "CAPONLY: "+line
         wds = []
 #            wds = split_re.split(line)
         result = token_re.match(line)
@@ -389,21 +300,22 @@ class POSTagger:
             tagged_sent = " ".join( [tok.__pstr__() for tok in tagged_tokens] )
         else:
             tagged_sent = " ".join( [tok.__str__() for tok in tagged_tokens] )
-        print(tagged_sent)
+        for w, t in zip(doc, tagged_tokens):
+            w._.melt_tagger = t.label
         return doc
 
 
     def load_tag_dictionary(self, filepath ):
-        print >> sys.stderr, "  TAGGER: Loading tag dictionary..."
+        LOGGER.info("  TAGGER: Loading tag dictionary...")
         self.tag_dict = unserialize( filepath )
-        print >> sys.stderr, "  TAGGER: Loading tag dictionary: done"
+        LOGGER.info("  TAGGER: Loading tag dictionary: done")
         return
 
 
     def load_lexicon(self, filepath ):
-        print >> sys.stderr, "  TAGGER: Loading external lexicon..."
+        LOGGER.info("  TAGGER: Loading external lexicon...")
         self.lex_dict = unserialize( filepath )
-        print >> sys.stderr, "  TAGGER: Loading external lexicon: done"
+        LOGGER.info("  TAGGER: Loading external lexicon: done")
         return
 
 
@@ -456,7 +368,7 @@ class BrownReader(CorpusReader):
                     else:
                         token_list.append( (wd,tag) )
                 else:
-                    print >> sys.stderr, "Warning: Incorrect token/tag pair: \""+(item.encode('utf8'))+"\""+" --- line: "+line
+                    LOGGER.info("Warning: Incorrect token/tag pair: \""+(item.encode('utf8'))+"\""+" --- line: "+line)
         return token_list
 
 ####################Weigthed Corpus########################
@@ -548,22 +460,22 @@ class MaxEntClassifier:
 
 
     def load(self, dirpath ):
-        print >> sys.stderr, "  TAGGER: Loading model from %s..." %dirpath
-        self.classes = unserialize( os.path.join(dirpath, 'classes.json') )
-        self.feature2int = unserialize( os.path.join(dirpath, 'feature_map.json') )
-        self.weights = np.load( os.path.join(dirpath, 'weights.npy') )
-        self.bias_weights = np.load( os.path.join(dirpath, 'bias_weights.npy') )
-        print >> sys.stderr, "  TAGGER: Loading model from %s: done" %dirpath
+        LOGGER.info("  TAGGER: Loading model from %s..." %dirpath)
+        self.classes = unserialize( os.path.join(dirpath, 'classes.json'))
+        self.feature2int = unserialize( os.path.join(dirpath, 'feature_map.json'))
+        self.weights = np.load( os.path.join(dirpath, 'weights.npy'))
+        self.bias_weights = np.load( os.path.join(dirpath, 'bias_weights.npy'))
+        LOGGER.info("  TAGGER: Loading model from %s: done" %dirpath)
         return
 
 
     def dump(self, dirpath):
-        print >> sys.stderr, "  TAGGER (TRAIN): Dumping model in %s..." %dirpath
-        serialize( self.classes, os.path.join(dirpath, 'classes.json') )
-        serialize( self.feature2int, os.path.join(dirpath, 'feature_map.json') )
-        self.weights.dump( os.path.join(dirpath, 'weights.npy') )
-        self.bias_weights.dump( os.path.join(dirpath, 'bias_weights.npy') )
-        print >> sys.stderr, "  TAGGER (TRAIN): Dumping model in %s: done." %dirpath
+        LOGGER.info("  TAGGER (TRAIN): Dumping model in %s..." %dirpath)
+        serialize(self.classes, os.path.join(dirpath, 'classes.json'))
+        serialize(self.feature2int, os.path.join(dirpath, 'feature_map.json'))
+        self.weights.dump( os.path.join(dirpath, 'weights.npy'))
+        self.bias_weights.dump( os.path.join(dirpath, 'bias_weights.npy'))
+        LOGGER.info("  TAGGER (TRAIN): Dumping model in %s: done." %dirpath)
         return
 
 
@@ -600,7 +512,7 @@ class MaxEntClassifier:
         -maxit: max # of iterations (megam default:100)
         """
 
-        print >> sys.stderr, "  TAGGER (TRAIN): Training Megam classifier (using "+megam_exec_path+")..."
+        LOGGER.info("  TAGGER (TRAIN): Training Megam classifier (using "+megam_exec_path+")...")
         # build process command
         proc = [megam_exec_path, "-nc", "-repeat", repeat, "-lambda", prior_prec, "-maxi", maxit]
         if not bias:
