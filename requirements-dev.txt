@@ -4,3 +4,4 @@
 pytest
 pytest-cov
 codecov
+tox-travis

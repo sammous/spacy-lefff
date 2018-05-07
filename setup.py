@@ -18,6 +18,7 @@ def setup_package():
         name='spacy-lefff',
         description=' Custom French lemmatizer based on Leff for spacy',
         long_description=readme,
+        long_description_content_type='text/markdown',
         author='sami moustachir',
         author_email='moustachir.sami@gmail.com',
         url='https://github.com/sammous/spacy-lefff',
