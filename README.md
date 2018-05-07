@@ -4,7 +4,7 @@
 
 ## Installation
 
-`spacy-lefff` requires `spacy` v2.0.0 or higher.
+`spacy-lefff` requires `spacy` <= v2.0.9.
 
 ```
 pip install spacy-lefff
