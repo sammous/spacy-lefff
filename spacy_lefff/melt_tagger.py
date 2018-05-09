@@ -60,7 +60,7 @@ from lefff import LefffLemmatizer
 LOGGER = logging.getLogger(__name__)
 
 DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
-MODELS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'models/fr')
+MODELS_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'models/fr')
 
 LEXICON_FILE = os.path.join(MODELS_DIR, 'lexicon.json')
 TAG_DICT = os.path.join(MODELS_DIR, 'tag_dict.json')
