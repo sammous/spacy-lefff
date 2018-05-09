@@ -14,7 +14,7 @@ def nlp():
 
 @pytest.fixture
 def add_lefff_lemma_nlp(nlp):
-    french_lemmatizer = LefffLemmatizer(melt=True)
+    french_lemmatizer = LefffLemmatizer(after_melt=True)
     nlp.add_pipe(french_lemmatizer, after='POSTagger')
     return nlp
 
