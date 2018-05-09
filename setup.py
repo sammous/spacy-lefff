@@ -1,9 +1,9 @@
-
 #!/usr/bin/env python
 # coding: utf8
 
 from pathlib import Path
 from setuptools import setup, find_packages
+import os
 
 def setup_package():
     package_name = 'spacy_lefff'
@@ -16,7 +16,7 @@ def setup_package():
 
     setup(
         name='spacy-lefff',
-        description=' Custom French lemmatizer based on Leff for spacy',
+        description=' Custom French POS and lemmatizer based on Leff for spacy',
         long_description=readme,
         long_description_content_type='text/markdown',
         author='sami moustachir',
