@@ -1,8 +1,4 @@
 language: python
-cache:
-  directories:
-    - $TRAVIS_BUILD_DIR/model
-    - pip
 sudo: true
 python:
   - '2.7'
