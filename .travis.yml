@@ -12,12 +12,11 @@ before_install:
   - tar xvfz git-lfs-linux-amd64-1.1.2.tar.gz
   - mv git-lfs-1.1.2/git-lfs $HOME/bin/git-lfs
   - export PATH=$PATH:$HOME/bin/
-  - tar xvfz $TRAVIS_BUILD_DIR/model/model.tar.gz -C $TRAVIS_BUILD_DIR
 install:
   - pip install -r requirements-dev.txt
-before_script:
-  - git lfs pull
 script:
+  - git lfs pull
+  - tar xvfz model/model.tar.gz -C .
   - tox
 after_success:
   - codecov
