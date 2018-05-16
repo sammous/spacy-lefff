@@ -39,15 +39,18 @@ class LefffLemmatizer(object):
     def lemmatize(self, text, pos):
         text = text.lower() if pos != 'PROPN' else text
         try:
-            if (pos in SPACY_LEFFF_DIC) and ((text, SPACY_LEFFF_DIC[pos]) in self.lemma_dict):
-                return self.lemma_dict[(text, SPACY_LEFFF_DIC[pos])]
+            if self.after_melt:
+                return self.lemma_dict[(text, pos)]
+            else:
+                if (pos in SPACY_LEFFF_DIC) and ((text, SPACY_LEFFF_DIC[pos]) in self.lemma_dict):
+                    return self.lemma_dict[(text, SPACY_LEFFF_DIC[pos])]
         except:
             #if nothing was matched in leff lemmatizer, notify it
             return None
 
     def __call__(self, doc):
         for token in doc:
-            t = token._.melt_tagger if self.after_melt else token.pos_
+            t = token._.melt_tagger.lower() if self.after_melt else token.pos_
             lemma = self.lemmatize(token.text, t)
             token._.lefff_lemma = lemma
         return doc
