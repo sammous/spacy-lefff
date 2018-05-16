@@ -65,6 +65,9 @@ MODELS_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file
 LEXICON_FILE = os.path.join(MODELS_DIR, 'lexicon.json')
 TAG_DICT = os.path.join(MODELS_DIR, 'tag_dict.json')
 
+PACKAGE = 'tagger'
+URL_MODEL = 'https://www.dropbox.com/s/xjn863wq4599vur/model.tar.gz?dl=1'
+
 # extra options dict for feature selection
 feat_select_options = {
     # previous default values
