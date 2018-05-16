@@ -29,8 +29,6 @@ def test_lemmatizer_noun_verb(nlp):
 
 def test_lemmatizer_noun(nlp):
     tokens = nlp(u"il y a des Françaises.")
-    for d in tokens:
-        print(d.text, d.pos_, d._.lefff_lemma, d.tag_)
     assert tokens[4]._.lefff_lemma == "français"
 
 def test_lemmatizer_noun_2(nlp):

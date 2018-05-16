@@ -30,3 +30,11 @@ def test_sentence_one(nlp):
 def test_sentence_lefff_pos_lemma(add_lefff_lemma_nlp):
     tokens = add_lefff_lemma_nlp(u"Qu'est ce qu'il se passe")
     assert True
+
+def test_lemmatizer_verb(add_lefff_lemma_nlp):
+    tokens = add_lefff_lemma_nlp(u"J'ai une maison à Paris.")
+    assert tokens[1]._.lefff_lemma == "avoir"
+
+def test_lemmatizer_noun(add_lefff_lemma_nlp):
+    tokens = add_lefff_lemma_nlp(u"il y a des Françaises.")
+    assert tokens[4]._.lefff_lemma == u"français"
