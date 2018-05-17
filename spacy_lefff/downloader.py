@@ -1,7 +1,6 @@
 import os
 import sys
 import logging
-import zipfile
 import tarfile
 import shutil
 import requests
@@ -10,11 +9,10 @@ DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
 LOGGER = logging.getLogger(__name__)
 
 class Downloader(object):
-    def __init__(self, pkg, url=None, download_dir=DATA_DIR, zip=False):
+    def __init__(self, pkg, url=None, download_dir=DATA_DIR):
         self._error = None
         self.url = url
         self.pkg = pkg
-        self.zip = True
         if not os.path.exists(os.path.join(download_dir, pkg)):
             os.mkdir(os.path.join(download_dir, pkg))
             self.download_dir = os.path.join(os.path.join(download_dir, pkg))
