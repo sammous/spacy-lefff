@@ -56,16 +56,17 @@ from json import dumps, loads
 import io
 from spacy.tokens import Token as tk
 from lefff import LefffLemmatizer
+from downloader import Downloader
 
 LOGGER = logging.getLogger(__name__)
 
+PACKAGE = 'tagger'
 DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
-MODELS_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'models/fr')
+MODELS_DIR = os.path.join(DATA_DIR, PACKAGE, 'models/fr')
 
 LEXICON_FILE = os.path.join(MODELS_DIR, 'lexicon.json')
 TAG_DICT = os.path.join(MODELS_DIR, 'tag_dict.json')
 
-PACKAGE = 'tagger'
 URL_MODEL = 'https://www.dropbox.com/s/xjn863wq4599vur/model.tar.gz?dl=1'
 
 # extra options dict for feature selection
@@ -98,9 +99,10 @@ feat_select_options = {
 
 ############################ pos_tagger.py ############################
 
-class POSTagger:
+class POSTagger(Downloader):
 
     def __init__(self, data_dir=DATA_DIR, lexicon_file_name=LEXICON_FILE, tag_file_name=TAG_DICT, print_probas=False):
+        super(POSTagger, self).__init__(PACKAGE, url=URL_MODEL, download_dir=DATA_DIR)
         tk.set_extension('melt_tagger', default=None)
         LOGGER.info("  TAGGER: Loading lexicon...")
         self.lex_dict = unserialize(lexicon_file_name)
