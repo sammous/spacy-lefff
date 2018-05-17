@@ -11,8 +11,6 @@ before_install:
 install:
   - pip install -r requirements-dev.txt
 script:
-  - git lfs pull
-  - tar xvfz model/model.tar.gz -C .
   - tox
 after_success:
   - codecov
