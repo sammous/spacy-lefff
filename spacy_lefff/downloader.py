@@ -22,22 +22,8 @@ class Downloader(object):
         else:
             LOGGER.info('data already set up')
 
-    def _download_data(self):
-        LOGGER.info('downloading data for {}...'.format(self.pkg))
-        with requests.get(self.url) as r:
-            filename = self.get_filename_from_cd(r.headers.get('content-disposition'))
-            path = os.path.join(self.download_dir, filename)
-            open(path, 'wb').write(r.content)
-            if filename.endswith('.tar.gz'):
-                tar = tarfile.open(path, "r:gz")
-                for tarinfo in tar:
-                    tar.extract(tarinfo, self.download_dir)
-                tar.close()
-            #clean raw tar gz
-            os.remove(path)
-        LOGGER.info('download complete')
-
-    def get_filename_from_cd(self, cd):
+    @staticmethod
+    def get_filename_from_cd(cd):
         """
         Get filename from content-disposition
         """
@@ -47,3 +33,22 @@ class Downloader(object):
         if len(fname) == 0:
             return None
         return fname[0]
+
+    def _download_data(self):
+        LOGGER.info('downloading data for {}...'.format(self.pkg))
+        r = requests.get(self.url)
+        filename = self.get_filename_from_cd(r.headers.get('content-disposition'))
+        path = os.path.join(self.download_dir, filename)
+        open(path, 'wb').write(r.content)
+        if filename.endswith('.tar.gz'):
+            tar = tarfile.open(path, "r:gz")
+            for tarinfo in tar:
+                tar.extract(tarinfo, self.download_dir)
+            tar.close()
+        #clean raw tar gz
+        os.remove(path)
+        LOGGER.info('download complete')
+
+
+if __name__ == '__main__':
+    d=  Downloader('tagger', url='https://www.dropbox.com/s/xjn863wq4599vur/model.tar.gz?dl=1')
