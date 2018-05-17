@@ -56,7 +56,7 @@ def test_downloader(mock_get, _tmp_dir):
     mock_resp = _mock_response(content=model.read(), headers={'content-disposition': content_disposition})
     mock_get.return_value = mock_resp
     d = Downloader('test', download_dir=_tmp_dir.strpath, url=URL_MODEL)
-    m = _tmp_dir.listdir()[0].listdir()[0]
+    m = _tmp_dir.listdir()[0]
     assert len(_tmp_dir.listdir()) == 3 #test folder, temp model file, tar
     f = open(m.strpath, 'rb')
     assert f.read() == 'TEST'
