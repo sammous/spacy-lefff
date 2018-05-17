@@ -2,6 +2,9 @@ language: python
 sudo: true
 cache:
   - pip
+env:
+  global:
+    - TMPDIR=/tmp
 python:
   - '2.7'
 before_install:
