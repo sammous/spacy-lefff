@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 import os
+import io
 import pytest
 import tarfile
 import tempfile
@@ -58,5 +59,5 @@ def test_downloader(mock_get, _tmp_dir):
     d = Downloader('test', download_dir=_tmp_dir.strpath, url=URL_MODEL)
     m = _tmp_dir.listdir()[0]
     assert len(_tmp_dir.listdir()) == 3 #test folder, temp model file, tar
-    f = open(m.strpath, 'rb')
-    assert f.read() == 'TEST'
+    f = io.open(m.strpath, mode='r', encoding='utf-8')
+    assert unicode(f.read()) == 'TEST'
