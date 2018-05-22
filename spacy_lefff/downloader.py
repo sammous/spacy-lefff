@@ -34,15 +34,27 @@ class Downloader(object):
 
     def _download_data(self):
         LOGGER.info('downloading data for {}...'.format(self.pkg))
-        r = requests.get(self.url)
-        filename = self.get_filename_from_cd(r.headers.get('content-disposition'))
-        path = os.path.join(self.download_dir, filename)
-        open(path, 'wb').write(r.content)
-        if filename.endswith('.tar.gz'):
-            tar = tarfile.open(path, "r:gz")
-            for tarinfo in tar:
-                tar.extract(tarinfo, self.download_dir)
-            tar.close()
-        #clean raw tar gz
-        os.remove(path)
-        LOGGER.info('download complete')
+        r = requests.get(self.url, stream=True)
+        total_length = r.headers.get('content-length')
+        if total_length is None:
+            LOGGER.error("Couldn't fetch model data.")
+            raise Exception("Couldn't fetch model data.")
+        else:
+            dl = 0
+            total_length = int(total_length)
+            filename = self.get_filename_from_cd(r.headers.get('content-disposition'))
+            path = os.path.join(self.download_dir, filename)
+            with open(path, 'wb') as f:
+                for data in r.iter_content(chunk_size=4096):
+                    dl += len(data)
+                    f.write(data)
+                    done = int(50 * dl / total_length)
+                    LOGGER.debug("\r[%s%s] : downloading...", '*'*done, ' '*(50-done))
+            if filename.endswith('.tar.gz'):
+                tar = tarfile.open(path, "r:gz")
+                for tarinfo in tar:
+                    tar.extract(tarinfo, self.download_dir)
+                tar.close()
+            #clean raw tar gz
+            os.remove(path)
+            LOGGER.info('download complete')
