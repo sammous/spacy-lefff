@@ -70,9 +70,10 @@ def test_downloader(mock_tarfile, mock_get, _tmp_dir):
     mock_get.return_value = mock_resp
     mock_tarfile.open.return_value = model_tarfile 
     d = Downloader('test', download_dir=_tmp_dir.strpath, url=URL_MODEL)
-    m = [x for x in _tmp_dir.listdir()[0].listdir() if x.basename == 'model'][0]
+    test_folder = os.path.join(_tmp_dir.strpath, 'test')
+    m = os.path.join(test_folder, 'model')
     assert len(_tmp_dir.listdir()) == 2 #test folder, temp model tar
-    f = io.open(m.strpath, mode='r', encoding='utf-8')
+    f = io.open(m, mode='r', encoding='utf-8')
     #checking if untar model is the same as the one in _tmp_dir tar file
     assert unicode(f.read()) == 'TEST'
 
