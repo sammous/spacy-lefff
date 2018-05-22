@@ -1,4 +1,4 @@
-# spacy-lefff : Custom French lemmatizer based on Lefff for spacy [![Build Status](https://travis-ci.org/sammous/spacy-lefff.svg?branch=master)](https://travis-ci.org/sammous/spacy-lefff)[![Coverage Status](https://codecov.io/gh/sammous/spacy-lefff/badge.svg?branch=master)](https://codecov.io/gh/sammous/spacy-lefff?branch=master)
+# spacy-lefff : Custom French POS and lemmatizer based on Lefff for spacy [![Build Status](https://travis-ci.org/sammous/spacy-lefff.svg?branch=master)](https://travis-ci.org/sammous/spacy-lefff)[![Coverage Status](https://codecov.io/gh/sammous/spacy-lefff/badge.svg?branch=master)](https://codecov.io/gh/sammous/spacy-lefff?branch=master)
 
 [spacy v2.0](https://spacy.io/usage/v2) extension and pipeline component for adding a French lemmatizer based on Lefff.
 
@@ -20,16 +20,19 @@ pip install spacy-lefff
 Import and initialize your `nlp` spacy object and add the custom component after it parsed the document so you can benefit the POS tags.
 Be aware to work with `UTF-8`.
 
+If both POS and lemmatizer are bundled, you need to tell the lemmatizer to use MElt mapping by setting `after_melt`, else it will use the spaCy part of speech mapping.
 ```python
 import spacy
-from spacy_lefff import LefffLemmatizer
+from spacy_lefff import LefffLemmatizer, POSTagger
 
 nlp = spacy.load('fr')
-french_lemmatizer = LefffLemmatizer()
-nlp.add_pipe(french_lemmatizer, name='lefff', after='parser')
-doc = nlp(u"Paris est une ville très chère.")
+pos = POSTagger()
+french_lemmatizer = LefffLemmatizer(after_melt=True)
+nlp.add_pipe(pos, name='pos', after='parser')
+nlp.add_pipe(french_lemmatizer, name='lefff', after='pos')
+doc = nlp(u"Qu'est ce qu'il se passe")
 for d in doc:
-    print(d.text, d.pos_, d._.lefff_lemma, d.tag_)
+    print(d.text, d.pos_, d._.melt_tagger, d._.lefff_lemma, d.tag_, d.lemma_)
 ```
 ## Credits
 
