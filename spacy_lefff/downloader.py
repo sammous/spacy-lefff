@@ -46,7 +46,3 @@ class Downloader(object):
         #clean raw tar gz
         os.remove(path)
         LOGGER.info('download complete')
-
-
-if __name__ == '__main__':
-    d=  Downloader('tagger', url='https://www.dropbox.com/s/xjn863wq4599vur/model.tar.gz?dl=1')
