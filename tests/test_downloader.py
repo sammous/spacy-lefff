@@ -6,8 +6,6 @@ import io
 import pytest
 import tarfile
 import tempfile
-from functools import partial
-from codecs import iterdecode
 from mock import patch, Mock, MagicMock
 import requests
 from spacy_lefff import Downloader
