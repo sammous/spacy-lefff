@@ -49,7 +49,8 @@ class Downloader(object):
                     dl += len(data)
                     f.write(data)
                     done = int(50 * dl / total_length)
-                    LOGGER.debug("\r[%s%s] : downloading...", '*'*done, ' '*(50-done))
+                    if done % 5 == 0:
+                        LOGGER.debug("\r[%s%s] : downloading...", '*'*done, ' '*(50-done))
             if filename.endswith('.tar.gz'):
                 tar = tarfile.open(path, "r:gz")
                 for tarinfo in tar:

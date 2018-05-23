@@ -232,76 +232,6 @@ class POSTagger(Downloader):
         return
 
 
-############################ corpus_reader.py ############################
-
-
-class CorpusReader:
-    pass
-
-
-class BrownReader(CorpusReader):
-
-    """
-    Data reader for corpus in the Brown format:
-
-    Le/DET prix/NC de/P vente/NC du/P+D journal/NC n'/ADV a/V pas/ADV <E9>t<E9>/VPP divulgu<E9>/VPP ./PONCT
-    Le/DET cabinet/NC Arthur/NPP Andersen/NPP ,/PONCT administrateur/NC judiciaire/ADJ du/P+D titre/NC depuis/P l'/DET effondrement/NC de/P l'/DET empire/NC Maxwell/NPP en/P d<E9>cembre/NC 1991/NC ,/PO
-    NCT a/V indiqu<E9>/VPP que/CS les/DET nouveaux/ADJ propri<E9>taires/NC allaient/V poursuivre/VINF la/DET publication/NC ./PONCT
-
-    """
-
-    def __init__(self,infile, encoding='utf-8'):
-        self.stream = codecs.open(infile, 'r', encoding)
-        return
-
-    def __iter__(self):
-        return self
-
-    def next(self,lowerCaseCapOnly=0):
-        line = self.stream.readline()
-        if (line == ''):
-            self.stream.seek(0)
-            raise StopIteration
-        line = line.strip(' \n')
-        token_list = []
-        if line == 'DEV':
-            token_list.append((line,"__SPECIAL__"))
-        else:
-            wasCapOnly = 0
-            if (lowerCaseCapOnly == 1 and len(line) > 10):
-                wasCapOnly = CAPONLYLINE_RE.match(line)
-            for item in line.split(' '):
-                if item == '':
-                    continue
-                wdtag = WD_TAG_RE.match(item)
-                if (wdtag):
-                    wd,tag = wdtag.groups()
-                    if (wasCapOnly):
-                        token_list.append( (wd.lower(),tag) )
-                    else:
-                        token_list.append( (wd,tag) )
-                else:
-                    LOGGER.info("Warning: Incorrect token/tag pair: \""+(item.encode('utf8'))+"\""+" --- line: "+line)
-        return token_list
-
-####################Weigthed Corpus########################
-
-class WeightedReader(CorpusReader):
-    def __init__(self,infile,encoding='utf8'):
-        self.stream = codecs.open(infile, 'r', encoding)
-        return
-    def __iter__(self):
-        return self
-    def next(self):
-        line = self.stream.readline().strip()
-        if (line == ''):
-            self.stream.seek(0)
-            raise StopIteration
-        weight,tokens = line.split("\t",1)
-        w = 1. / float(weight)
-        tokens = [ tuple(tok.rsplit("_",1)) for tok in tokens.split() ]
-        return (w,tokens)
-
 ############################ my_token.py ############################
 
 
@@ -562,7 +492,7 @@ class Instance:
         dico = self.lex_dict
         lex_tags = dico.get(word,{})
         # selecting the suffix confidence class for the word
-        val = 1;
+        val = 1
         if len(lex_tags) == 1:
             val = lex_tags.values()[0]
         else:
@@ -759,16 +689,6 @@ def debug_n_best_sequence(n_best_sequences):
     print "debug"
     print ("\n".join([ "%s/%.2f" % (" ".join([unicode(t) for t in l]),s)  for l,s in n_best_sequences])).encode("utf8")
     print "----"
-
-def tag_dict(file_path):
-    tag_dict = defaultdict(dict)
-    for s in BrownReader(file_path):
-        for wd,tag in s:
-            if tag != "__SPECIAL__":
-                tag_dict[wd][tag] = 1
-    return tag_dict
-
-
 
 def word_list(file_path,t=5):
     word_ct = {}
