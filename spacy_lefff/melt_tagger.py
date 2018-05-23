@@ -40,17 +40,7 @@ equals = re.compile("=")
 upper = re.compile("^([A-Z]|[^_].*[A-Z])")
 allcaps = re.compile("^[A-Z]+$")
 
-try:
-    import numpy as np
-except ImportError:
-    sys.exit('This module requires that numpy be installed')
-
-# Import Psyco if available
-try:
-    import psyco
-    psyco.full()
-except ImportError:
-    pass
+import numpy as np
 
 from json import dumps, loads
 import io
