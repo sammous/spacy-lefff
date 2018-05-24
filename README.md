@@ -21,6 +21,24 @@ Import and initialize your `nlp` spacy object and add the custom component after
 Be aware to work with `UTF-8`.
 
 If both POS and lemmatizer are bundled, you need to tell the lemmatizer to use MElt mapping by setting `after_melt`, else it will use the spaCy part of speech mapping.
+Current mapping used spaCy to Lefff is :
+
+```json
+{
+    'ADJ': 'adj',
+    'ADP': 'det',
+    'ADV': 'adv',
+    'DET': 'det',
+    'PRON': 'cln',
+    'PROPN': 'np',
+    'NOUN': 'nc',
+    'VERB': 'v',
+    'PUNCT': 'poncts'
+}
+```
+
+### Code snippet
+
 ```python
 import spacy
 from spacy_lefff import LefffLemmatizer, POSTagger
