@@ -1,5 +1,5 @@
 #coding: utf8
-from __future__ import unicode_literals
+
 
 WORDNET_LEFFF_DIC = {'a':'adj',
 'r':'adv',
