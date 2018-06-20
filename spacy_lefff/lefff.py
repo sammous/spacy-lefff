@@ -1,23 +1,23 @@
-#coding: utf8
-from __future__ import unicode_literals
+# coding: utf8
 
 import os
 import logging
 import io
 
 from spacy.tokens import Token
-from mappings import WORDNET_LEFFF_DIC, SPACY_LEFFF_DIC
+from .mappings import SPACY_LEFFF_DIC
 
 DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
 LEFFF_FILE_NAME = 'lefff-3.4.mlex'
 LOGGER = logging.getLogger(__name__)
 
+
 class LefffLemmatizer(object):
     """
     Lefff Lemmatizer based on Lefff's extension file .mlex
 
-    Sagot (2010). The Lefff, a freely available and large-coverage morphological
-    and syntactic lexicon for French.
+    Sagot (2010). The Lefff, a freely available and large-coverage
+    morphological and syntactic lexicon for French.
     In Proceedings of the 7th international conference on Language Resources
     and Evaluation (LREC 2010), Istanbul, Turkey
     """

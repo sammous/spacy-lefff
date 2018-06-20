@@ -1,5 +1,5 @@
 # coding: utf-8
-from __future__ import unicode_literals
+
 
 import pytest
 
@@ -20,24 +20,24 @@ def nlp():
     return nlp
 
 def test_lemmatizer_verb(nlp):
-    tokens = nlp(u"J'ai une maison à Paris.")
+    tokens = nlp("J'ai une maison à Paris.")
     assert tokens[1]._.lefff_lemma == "avoir"
 
 def test_lemmatizer_noun_verb(nlp):
-    tokens = nlp(u"Les abaissements de température sont gênants.")
+    tokens = nlp("Les abaissements de température sont gênants.")
     assert tokens[1]._.lefff_lemma == "abaissement"
 
 def test_lemmatizer_noun(nlp):
-    tokens = nlp(u"il y a des Françaises.")
+    tokens = nlp("il y a des Françaises.")
     assert tokens[4]._.lefff_lemma == "français"
 
 def test_lemmatizer_noun_2(nlp):
-    tokens = nlp(u"Les abaissements de température sont gênants.")
+    tokens = nlp("Les abaissements de température sont gênants.")
     assert tokens[1]._.lefff_lemma == "abaissement"
     assert tokens[3]._.lefff_lemma == "température"
 
 def test_punctuations(nlp):
-    tokens = nlp(u". ?")
+    tokens = nlp(". ?")
     assert tokens[0]._.lefff_lemma == "."
     assert tokens[1]._.lefff_lemma == "?"
 

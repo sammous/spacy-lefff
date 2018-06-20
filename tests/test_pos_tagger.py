@@ -1,5 +1,5 @@
 # coding: utf-8
-from __future__ import unicode_literals
+
 from spacy_lefff import POSTagger, LefffLemmatizer
 from spacy_lefff.melt_tagger import MODELS_DIR
 
@@ -21,7 +21,7 @@ def add_lefff_lemma_nlp(nlp):
     return nlp
 
 def test_sentence_one(nlp):
-    tokens = nlp(u"Il y a des Costariciennes.")
+    tokens = nlp("Il y a des Costariciennes.")
     assert tokens[0]._.melt_tagger == 'CLS'
     assert tokens[1]._.melt_tagger == 'CLO'
     assert tokens[2]._.melt_tagger == 'V'
@@ -30,16 +30,16 @@ def test_sentence_one(nlp):
     assert tokens[5]._.melt_tagger == 'PONCT'
 
 def test_sentence_lefff_pos_lemma(add_lefff_lemma_nlp):
-    tokens = add_lefff_lemma_nlp(u"Qu'est ce qu'il se passe")
+    tokens = add_lefff_lemma_nlp("Qu'est ce qu'il se passe")
     assert True
 
 def test_lemmatizer_verb(add_lefff_lemma_nlp):
-    tokens = add_lefff_lemma_nlp(u"J'ai une maison à Paris.")
+    tokens = add_lefff_lemma_nlp("J'ai une maison à Paris.")
     assert tokens[1]._.lefff_lemma == "avoir"
 
 def test_lemmatizer_noun(add_lefff_lemma_nlp):
-    tokens = add_lefff_lemma_nlp(u"il y a des Françaises.")
-    assert tokens[4]._.lefff_lemma == u"français"
+    tokens = add_lefff_lemma_nlp("il y a des Françaises.")
+    assert tokens[4]._.lefff_lemma == "français"
 
 def test_load_lexicon():
     french_pos_tagger = POSTagger()

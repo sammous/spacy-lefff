@@ -45,8 +45,8 @@ import numpy as np
 from json import dumps, loads
 import io
 from spacy.tokens import Token as tk
-from lefff import LefffLemmatizer
-from downloader import Downloader
+from .lefff import LefffLemmatizer
+from .downloader import Downloader
 
 LOGGER = logging.getLogger(__name__)
 
@@ -109,7 +109,7 @@ class POSTagger(Downloader):
     def load_model(self,model_path=MODELS_DIR):
         try:
             self.classifier.load( model_path )
-        except Exception,e:
+        except Exception as e:
             sys.exit("Error: Failure load POS model from %s (%s)" %(model_path,e))
         return
 
@@ -306,8 +306,8 @@ class MaxEntClassifier:
         LOGGER.info("  TAGGER: Loading model from %s..." %dirpath)
         self.classes = unserialize( os.path.join(dirpath, 'classes.json'))
         self.feature2int = unserialize( os.path.join(dirpath, 'feature_map.json'))
-        self.weights = np.load( os.path.join(dirpath, 'weights.npy'))
-        self.bias_weights = np.load( os.path.join(dirpath, 'bias_weights.npy'))
+        self.weights = np.load( os.path.join(dirpath, 'weights.npy'), encoding='latin1')
+        self.bias_weights = np.load( os.path.join(dirpath, 'bias_weights.npy'), encoding='latin1')
         LOGGER.info("  TAGGER: Loading model from %s: done" %dirpath)
         return
 
@@ -355,13 +355,13 @@ class MaxEntClassifier:
             # summing bias and fweights
             weights = weights+fweights
         # exponentiation of weight sum
-        scores = map( math.exp, list(weights) )
+        scores = list(map( math.exp, list(weights) ))
         # compute normalization constant Z
         z = sum( scores )
         # compute probabilities
         probs = [ s/z for s in scores ]
         # return class/prob map
-        return zip( self.classes, probs )
+        return list(zip( self.classes, probs ))
 
 
 
@@ -407,23 +407,23 @@ class Instance:
         self.lex_left_tags = {}
         self.lex_right_tags = {}
         if self.lex_dict:
-            self.lex_left_tags = ["|".join(self.lex_dict.get(tok.string,{"unk":1}).keys())
+            self.lex_left_tags = ["|".join(list(self.lex_dict.get(tok.string,{"unk":1}).keys()))
                                   for tok in lconx if tok is not None]
-            self.lex_right_tags = ["|".join(self.lex_dict.get(tok.string,{"unk":1}).keys())
+            self.lex_right_tags = ["|".join(list(self.lex_dict.get(tok.string,{"unk":1}).keys()))
                                    for tok in rconx if tok is not None]
         if self.tag_dict:
-            self.train_left_tags = ["|".join(self.tag_dict.get(tok.string,{"unk":1}).keys())
+            self.train_left_tags = ["|".join(list(self.tag_dict.get(tok.string,{"unk":1}).keys()))
                                     for tok in lconx if tok is not None]
-            self.train_right_tags = ["|".join(self.tag_dict.get(tok.string,{"unk":1}).keys())
+            self.train_right_tags = ["|".join(list(self.tag_dict.get(tok.string,{"unk":1}).keys()))
                                     for tok in rconx if tok is not None]
         return
 
 
     def add(self,name,key,value=-1):
         if value == -1:
-            f = u'%s=%s' %(name,key)
+            f = '%s=%s' %(name,key)
         else:
-            f = u'%s=%s=%s' %(name,key,value)
+            f = '%s=%s=%s' %(name,key,value)
         self.fv.append( f )
         return f
 
@@ -434,9 +434,9 @@ class Instance:
 
 
     def __str__(self):
-        return u'%s\t%s' %(self.label,u" ".join(self.fv))
+        return '%s\t%s' %(self.label," ".join(self.fv))
     def weighted_str(self,w):
-        return u'%s $$$WEIGHT %f\t%s' %(self.label,w,u" ".join(self.fv))
+        return '%s $$$WEIGHT %f\t%s' %(self.label,w," ".join(self.fv))
 
     def get_features(self):
         self.get_static_features()
@@ -494,10 +494,10 @@ class Instance:
         # selecting the suffix confidence class for the word
         val = 1
         if len(lex_tags) == 1:
-            val = lex_tags.values()[0]
+            val = list(lex_tags.values())[0]
         else:
             val = 1
-            for v in lex_tags.values():
+            for v in list(lex_tags.values()):
                 if v == "0":
                     val = 0
                     break
@@ -603,7 +603,7 @@ class Instance:
                 self.add('%s' %feat_suffix, "unk")
             elif len(lex_tags) == 1:
                 # unique tag
-                t = lex_tags.keys()[0]
+                t = list(lex_tags.keys())[0]
                 self.add('%s-u' %feat_suffix,t,lex_tags[t])
             else:
                 # disjunctive tag
@@ -618,7 +618,7 @@ class Instance:
                     self.add('%s' %feat_suffix, "uc-unk")
                 elif len(uc_lex_tags) == 1:
                     # unique tag
-                    t = uc_lex_tags.keys()[0]
+                    t = list(uc_lex_tags.keys())[0]
                     self.add('%s-uc-u' %feat_suffix,t,uc_lex_tags[t])
                 else:
                     # disjunctive tag
@@ -686,9 +686,9 @@ class Instance:
 ############################ utils.py ############################
 
 def debug_n_best_sequence(n_best_sequences):
-    print "debug"
-    print ("\n".join([ "%s/%.2f" % (" ".join([unicode(t) for t in l]),s)  for l,s in n_best_sequences])).encode("utf8")
-    print "----"
+    print("debug")
+    print(("\n".join([ "%s/%.2f" % (" ".join([str(t) for t in l]),s)  for l,s in n_best_sequences])).encode("utf8"))
+    print("----")
 
 def word_list(file_path,t=5):
     word_ct = {}

@@ -101,3 +101,10 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# project
+*.bak
+models/
+help/
+.pytest_cache/
+*.model
