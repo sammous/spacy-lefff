@@ -90,7 +90,8 @@ def test_downloader_data_already_set_up(_tmp_dir, caplog):
     Testing if data is already set up, 
     meaning folder named 'test' already in download_dir
     '''
-    os.mkdir(os.path.join(_tmp_dir.strpath, 'test'))
+    if not os.path.exists(os.path.join(_tmp_dir.strpath, 'test')):
+        os.mkdir(os.path.join(_tmp_dir.strpath, 'test'))
     d = Downloader('test', download_dir=_tmp_dir.strpath, url=URL_MODEL)
     assert caplog.records[0].levelname == 'INFO'
     assert 'data already set up' in caplog.text
