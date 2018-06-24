@@ -20,27 +20,27 @@ def nlp():
     return nlp
 
 def test_lemmatizer_verb(nlp):
-    tokens = nlp("J'ai une maison à Paris.")
-    assert tokens[1]._.lefff_lemma == "avoir"
+    tokens = nlp(u"J'ai une maison à Paris.")
+    assert tokens[1]._.lefff_lemma == u"avoir"
 
 def test_lemmatizer_noun_verb(nlp):
-    tokens = nlp("Les abaissements de température sont gênants.")
-    assert tokens[1]._.lefff_lemma == "abaissement"
+    tokens = nlp(u"Les abaissements de température sont gênants.")
+    assert tokens[1]._.lefff_lemma == u"abaissement"
 
 def test_lemmatizer_noun(nlp):
-    tokens = nlp("il y a des Françaises.")
-    assert tokens[4]._.lefff_lemma == "français"
+    tokens = nlp(u"il y a des Françaises.")
+    assert tokens[4]._.lefff_lemma == u"français"
 
 def test_lemmatizer_noun_2(nlp):
-    tokens = nlp("Les abaissements de température sont gênants.")
-    assert tokens[1]._.lefff_lemma == "abaissement"
-    assert tokens[3]._.lefff_lemma == "température"
+    tokens = nlp(u"Les abaissements de température sont gênants.")
+    assert tokens[1]._.lefff_lemma == u"abaissement"
+    assert tokens[3]._.lefff_lemma == u"température"
 
 def test_punctuations(nlp):
-    tokens = nlp(". ?")
-    assert tokens[0]._.lefff_lemma == "."
-    assert tokens[1]._.lefff_lemma == "?"
+    tokens = nlp(u". ?")
+    assert tokens[0]._.lefff_lemma == u"."
+    assert tokens[1]._.lefff_lemma == u"?"
 
 def test_lemmatizer_exception():
     french_lemmatizer = LefffLemmatizer()
-    assert french_lemmatizer.lemmatize("unknow", "unknown") is None
+    assert french_lemmatizer.lemmatize(u"unknow", u"unknown") is None
