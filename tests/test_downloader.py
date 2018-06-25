@@ -1,5 +1,5 @@
 # coding: utf-8
-from __future__ import unicode_literals
+
 
 import os
 import io
@@ -75,7 +75,7 @@ def test_downloader(mock_tarfile, mock_get, _tmp_dir):
     assert len(_tmp_dir.listdir()) == 2 #test folder, temp model tar
     f = io.open(m, mode='r', encoding='utf-8')
     #checking if untar model is the same as the one in _tmp_dir tar file
-    assert unicode(f.read()) == 'TEST'
+    assert str(f.read()) == 'TEST'
 
 @patch('spacy_lefff.downloader.requests.get')
 def test_downloader_failed(mock_get, _tmp_dir):
@@ -84,3 +84,14 @@ def test_downloader_failed(mock_get, _tmp_dir):
     with pytest.raises(Exception) as e_info:
         d = Downloader('test', download_dir=_tmp_dir.strpath, url='')
         assert e_info.value.message == "Couldn't fetch model data."
+
+def test_downloader_data_already_set_up(_tmp_dir, caplog):
+    '''
+    Testing if data is already set up, 
+    meaning folder named 'test' already in download_dir
+    '''
+    if not os.path.exists(os.path.join(_tmp_dir.strpath, 'test')):
+        os.mkdir(os.path.join(_tmp_dir.strpath, 'test'))
+    d = Downloader('test', download_dir=_tmp_dir.strpath, url=URL_MODEL)
+    assert caplog.records[0].levelname == 'INFO'
+    assert 'data already set up' in caplog.text

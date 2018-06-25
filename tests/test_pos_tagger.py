@@ -1,5 +1,5 @@
 # coding: utf-8
-from __future__ import unicode_literals
+
 from spacy_lefff import POSTagger, LefffLemmatizer
 from spacy_lefff.melt_tagger import MODELS_DIR
 
@@ -35,7 +35,7 @@ def test_sentence_lefff_pos_lemma(add_lefff_lemma_nlp):
 
 def test_lemmatizer_verb(add_lefff_lemma_nlp):
     tokens = add_lefff_lemma_nlp(u"J'ai une maison à Paris.")
-    assert tokens[1]._.lefff_lemma == "avoir"
+    assert tokens[1]._.lefff_lemma == u"avoir"
 
 def test_lemmatizer_noun(add_lefff_lemma_nlp):
     tokens = add_lefff_lemma_nlp(u"il y a des Françaises.")
