@@ -41,6 +41,8 @@ Current mapping used spaCy to Lefff is :
 
 ### Code snippet
 
+You need to install the French spaCy package before : `python -m spacy download fr`.
+
 ```python
 import spacy
 from spacy_lefff import LefffLemmatizer, POSTagger

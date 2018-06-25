@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 # coding: utf8
 
-from pathlib import Path
+try:
+    from pathlib import Path
+except (ImportError, AttributeError):
+    from pathlib2 import Path
 from setuptools import setup, find_packages
 import os
 
@@ -22,7 +25,7 @@ def setup_package():
         author='sami moustachir',
         author_email='moustachir.sami@gmail.com',
         url='https://github.com/sammous/spacy-lefff',
-        version='0.2.1',
+        version='0.3.0',
         license='MIT',
         packages=find_packages(exclude=['tests']),
         package_data={'spacy_lefff': ['data/*']},
