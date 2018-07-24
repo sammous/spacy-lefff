@@ -11,7 +11,7 @@ import os
 def nlp():
     nlp = spacy.load('fr')
     french_pos_tagger = POSTagger()
-    nlp.add_pipe(french_pos_tagger, after='parser')
+    nlp.add_pipe(french_pos_tagger, name='POSTagger', after='parser')
     return nlp
 
 @pytest.fixture

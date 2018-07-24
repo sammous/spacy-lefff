@@ -92,6 +92,8 @@ feat_select_options = {
 
 class POSTagger(Downloader):
 
+    name = 'melt_tagger'
+    
     def __init__(
             self,
             data_dir=DATA_DIR,
@@ -104,7 +106,10 @@ class POSTagger(Downloader):
             PACKAGE,
             url=URL_MODEL,
             download_dir=DATA_DIR)
-        tk.set_extension('melt_tagger', default=None)
+        if not tk.get_extension(self.name):
+            tk.set_extension(self.name, default=None)
+        else:
+            LOGGER.info('Token {} already registered'.format(self.name))
         LOGGER.info("  TAGGER: Loading lexicon...")
         self.lex_dict = unserialize(lexicon_file_name)
         LOGGER.info("  TAGGER: Loading tags...")
