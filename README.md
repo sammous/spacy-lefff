@@ -10,7 +10,7 @@ When POS tagging and Lemmatizaion are combined inside a pipeline, it improves yo
 
 ## Installation
 
-`spacy-lefff` requires `spacy` <= v2.0.9.
+`spacy-lefff` requires `spacy` <= v2.0.12.
 
 ```
 pip install spacy-lefff
