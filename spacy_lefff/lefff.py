@@ -22,11 +22,16 @@ class LefffLemmatizer(object):
     and Evaluation (LREC 2010), Istanbul, Turkey
     """
 
+    name = 'lefff_lemma'
+
     def __init__(self, data_dir=DATA_DIR,
                  lefff_file_name=LEFFF_FILE_NAME, after_melt=False):
         LOGGER.info('New LefffLemmatizer instantiated.')
         # register your new attribute token._.lefff_lemma
-        Token.set_extension('lefff_lemma', default=None)
+        if not Token.get_extension(self.name):
+            Token.set_extension(self.name, default=None)
+        else:
+            LOGGER.info('Token {} already registered'.format(self.name))
         # In memory lemma mapping
         self.lemma_dict = {}
         self.after_melt = after_melt
