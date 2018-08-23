@@ -5,6 +5,8 @@ import tarfile
 import shutil
 import requests
 import re
+from tqdm import tqdm
+
 DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
 LOGGER = logging.getLogger(__name__)
 
@@ -36,24 +38,21 @@ class Downloader(object):
     def _download_data(self):
         LOGGER.info('downloading data for {}...'.format(self.pkg))
         r = requests.get(self.url, stream=True)
-        total_length = r.headers.get('content-length')
+        total_length = r.headers.get('content-length', 0)
+        pbar = tqdm(
+                unit='B', unit_scale=True,
+                total=int(total_length))
         if total_length is None:
             LOGGER.error("Couldn't fetch model data.")
             raise Exception("Couldn't fetch model data.")
         else:
-            dl = 0
-            total_length = int(total_length)
             filename = self.get_filename_from_cd(
                 r.headers.get('content-disposition'))
             path = os.path.join(self.download_dir, filename)
             with open(path, 'wb') as f:
                 for data in r.iter_content(chunk_size=4096):
-                    dl += len(data)
                     f.write(data)
-                    done = int(50 * dl / total_length)
-                    if done % 5 == 0:
-                        LOGGER.debug("\r[%s%s] : downloading...",
-                                     '*' * done, ' ' * (50 - done))
+                    pbar.update(len(data))
             if filename.endswith('.tar.gz'):
                 tar = tarfile.open(path, "r:gz")
                 for tarinfo in tar:
