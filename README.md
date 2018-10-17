@@ -87,9 +87,24 @@ pos = POSTagger()
 french_lemmatizer = LefffLemmatizer(after_melt=True)
 nlp.add_pipe(pos, name='pos', after='parser')
 nlp.add_pipe(french_lemmatizer, name='lefff', after='pos')
-doc = nlp(u"Qu'est ce qu'il se passe")
+doc = nlp(u"Apple cherche a acheter une startup anglaise pour 1 milliard de dollard")
 for d in doc:
     print(d.text, d.pos_, d._.melt_tagger, d._.lefff_lemma, d.tag_, d.lemma_)
+```
+
+```
+Apple ADJ NPP None ADJ__Number=Sing Apple
+cherche NOUN V chercher NOUN__Number=Sing chercher
+a AUX V avoir AUX__Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin avoir
+acheter VERB VINF None VERB__VerbForm=Inf acheter
+une DET DET un DET__Definite=Ind|Gender=Fem|Number=Sing|PronType=Art un
+startup ADJ NC None ADJ__Number=Sing startup
+anglaise NOUN ADJ anglais NOUN__Gender=Fem|Number=Sing anglais
+pour ADP P None ADP___ pour
+1 NUM DET None NUM__NumType=Card 1
+milliard NOUN NC milliard NOUN__Gender=Masc|Number=Sing|NumType=Card milliard
+de ADP P None ADP___ de
+dollard NOUN NC None NOUN__Gender=Masc|Number=Sing dollard
 ```
 ## Credits
 
