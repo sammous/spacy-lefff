@@ -78,6 +78,36 @@ VS	   subjunctive verb form
 
 You need to install the French spaCy package before : `python -m spacy download fr`.
 
+- An example using the `LefffLemmatizer` without the `POSTagger`:
+
+```python
+import spacy
+from spacy_lefff import LefffLemmatizer, POSTagger
+
+nlp = spacy.load('fr')
+french_lemmatizer = LefffLemmatizer()
+nlp.add_pipe(french_lemmatizer, name='lefff')
+doc = nlp(u"Apple cherche a acheter une startup anglaise pour 1 milliard de dollard")
+for d in doc:
+    print(d.text, d.pos_, d._.lefff_lemma, d.tag_, d.lemma_)
+```
+
+```
+Apple ADJ None ADJ__Number=Sing Apple
+cherche NOUN cherche NOUN__Number=Sing chercher
+a AUX None AUX__Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin avoir
+acheter VERB acheter VERB__VerbForm=Inf acheter
+une DET un DET__Definite=Ind|Gender=Fem|Number=Sing|PronType=Art un
+startup ADJ None ADJ__Number=Sing startup
+anglaise NOUN anglaise NOUN__Gender=Fem|Number=Sing anglais
+pour ADP None ADP___ pour
+1 NUM None NUM__NumType=Card 1
+milliard NOUN milliard NOUN__Gender=Masc|Number=Sing|NumType=Card milliard
+de ADP un ADP___ de
+dollard NOUN None NOUN__Gender=Masc|Number=Sing dollard
+```
+- An example using the `POSTagger` :
+
 ```python
 import spacy
 from spacy_lefff import LefffLemmatizer, POSTagger
@@ -106,6 +136,10 @@ milliard NOUN NC milliard NOUN__Gender=Masc|Number=Sing|NumType=Card milliard
 de ADP P None ADP___ de
 dollard NOUN NC None NOUN__Gender=Masc|Number=Sing dollard
 ```
+
+We can see that both `cherche` and `startup` where not tagged correctly by the default pos tagger.
+`spaCy`classified them as a `NOUN` and `ADJ` while `MElT` classified them as a `V` and an `NC`.
+
 ## Credits
 
 Sagot, B. (2010). [The Lefff, a freely available and large-coverage morphological and syntactic lexicon for French](https://hal.inria.fr/inria-00521242/). In 7th international conference on Language Resources and Evaluation (LREC 2010).
