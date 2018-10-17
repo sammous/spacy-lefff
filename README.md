@@ -7,6 +7,7 @@
 
 This package allows to bring Lefff lemmatization and part-of-speech tagging to a spaCy custom pipeline.
 When POS tagging and Lemmatizaion are combined inside a pipeline, it improves your text preprocessing for French compared to the built-in spaCy French processing.
+It is still a WIP (work in progress), so the matching might not be perfect but if nothing was found by the package, it is still possible to use the default results of `spaCy`.
 
 ## Installation
 
