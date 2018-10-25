@@ -5,7 +5,7 @@ import logging
 import io
 
 from spacy.tokens import Token
-from .mappings import SPACY_LEFFF_DIC
+from .mappings import SPACY_LEFFF_DIC, MELT_TO_LEFFF_DIC
 
 DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
 LEFFF_FILE_NAME = 'lefff-3.4.mlex'
@@ -47,6 +47,8 @@ class LefffLemmatizer(object):
         text = text.lower() if pos != 'PROPN' else text
         try:
             if self.after_melt:
+                if pos in MELT_TO_LEFFF_DIC:
+                    pos = MELT_TO_LEFFF_DIC[pos]
                 return self.lemma_dict[(text, pos)]
             else:
                 if (pos in SPACY_LEFFF_DIC) and (
