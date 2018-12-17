@@ -7,6 +7,7 @@ import pytest
 import spacy
 import os
 
+
 @pytest.fixture
 def nlp():
     nlp = spacy.load('fr')
@@ -14,11 +15,13 @@ def nlp():
     nlp.add_pipe(french_pos_tagger, name='POSTagger', after='parser')
     return nlp
 
+
 @pytest.fixture
 def add_lefff_lemma_nlp(nlp):
     french_lemmatizer = LefffLemmatizer(after_melt=True)
     nlp.add_pipe(french_lemmatizer, after='POSTagger')
     return nlp
+
 
 def test_sentence_one(nlp):
     tokens = nlp(u"Il y a des Costariciennes.")
@@ -29,10 +32,10 @@ def test_sentence_one(nlp):
     assert tokens[4]._.melt_tagger == 'NPP'
     assert tokens[5]._.melt_tagger == 'PONCT'
 
+
 def test_sentence_lefff_pos_lemma(add_lefff_lemma_nlp):
     tokens = add_lefff_lemma_nlp(u"Qu'est ce qu'il se passe")
-    for d in tokens:
-        print(d.text, d.pos_, d._.melt_tagger, d._.lefff_lemma, d.tag_, d.lemma_)
+
 
 def test_lemmatizer_verb(add_lefff_lemma_nlp):
     tokens = add_lefff_lemma_nlp(u"J'ai une maison à Paris.")
@@ -45,12 +48,14 @@ def test_lemmatizer_noun(add_lefff_lemma_nlp):
     assert tokens[4]._.lefff_lemma == u"français"
     assert tokens[3]._.lefff_lemma == u"un"
 
+
 def test_load_lexicon():
     french_pos_tagger = POSTagger()
     lex_dict = french_pos_tagger.lex_dict
     lexicon = os.path.join(MODELS_DIR, 'lexicon.json')
     french_pos_tagger.load_lexicon(lexicon)
     assert french_pos_tagger.lex_dict == lex_dict
+
 
 def test_load_tag():
     french_pos_tagger = POSTagger()
