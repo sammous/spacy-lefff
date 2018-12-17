@@ -20,6 +20,10 @@ SPACY_LEFFF_DIC = {
 }
 
 MELT_TO_LEFFF_DIC = {
+    "ADJ": 'adj',
+    "ADJWH": 'adj',
+    "ADV": 'adv',
+    "ADVW": 'adv',
     "P": 'prep',
     "P+D": 'prep',
     "P+PRO": 'prep',
@@ -34,5 +38,6 @@ MELT_TO_LEFFF_DIC = {
     "VS": 'v',
     "PRO": 'pro',
     "PROREL": 'pro',
-    "PROWH": 'pro'
+    "PROWH": 'pro',
+    "PUNCT": 'poncts'
 }
