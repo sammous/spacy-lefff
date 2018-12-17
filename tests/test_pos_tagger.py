@@ -31,15 +31,19 @@ def test_sentence_one(nlp):
 
 def test_sentence_lefff_pos_lemma(add_lefff_lemma_nlp):
     tokens = add_lefff_lemma_nlp(u"Qu'est ce qu'il se passe")
-    assert True
+    for d in tokens:
+        print(d.text, d.pos_, d._.melt_tagger, d._.lefff_lemma, d.tag_, d.lemma_)
 
 def test_lemmatizer_verb(add_lefff_lemma_nlp):
     tokens = add_lefff_lemma_nlp(u"J'ai une maison à Paris.")
     assert tokens[1]._.lefff_lemma == u"avoir"
+    assert tokens[2]._.lefff_lemma == u"un"
+
 
 def test_lemmatizer_noun(add_lefff_lemma_nlp):
     tokens = add_lefff_lemma_nlp(u"il y a des Françaises.")
     assert tokens[4]._.lefff_lemma == u"français"
+    assert tokens[3]._.lefff_lemma == u"un"
 
 def test_load_lexicon():
     french_pos_tagger = POSTagger()
