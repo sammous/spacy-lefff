@@ -27,15 +27,15 @@ Current mapping used spaCy to Lefff is :
 
 ```json
 {
-    'ADJ': 'adj',
-    'ADP': 'det',
-    'ADV': 'adv',
-    'DET': 'det',
-    'PRON': 'cln',
-    'PROPN': 'np',
-    'NOUN': 'nc',
-    'VERB': 'v',
-    'PUNCT': 'poncts'
+    "ADJ": "adj",
+    "ADP": "det",
+    "ADV": "adv",
+    "DET": "det",
+    "PRON": "cln",
+    "PROPN": "np",
+    "NOUN": "nc",
+    "VERB": "v",
+    "PUNCT": "poncts"
 }
 ```
 
