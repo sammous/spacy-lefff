@@ -25,6 +25,9 @@ Import and initialize your `nlp` spacy object and add the custom component after
 Be aware to work with `UTF-8`.
 
 If both POS and lemmatizer are bundled, you need to tell the lemmatizer to use MElt mapping by setting `after_melt`, else it will use the spaCy part of speech mapping.
+
+`default` option allows to return the word by default if no lemma was found.
+
 Current mapping used spaCy to Lefff is :
 
 ```json
@@ -118,7 +121,7 @@ from spacy_lefff import LefffLemmatizer, POSTagger
 
 nlp = spacy.load('fr')
 pos = POSTagger()
-french_lemmatizer = LefffLemmatizer(after_melt=True)
+french_lemmatizer = LefffLemmatizer(after_melt=True, default=True)
 nlp.add_pipe(pos, name='pos', after='parser')
 nlp.add_pipe(french_lemmatizer, name='lefff', after='pos')
 doc = nlp(u"Apple cherche a acheter une startup anglaise pour 1 milliard de dollard")

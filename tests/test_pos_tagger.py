@@ -8,23 +8,8 @@ import spacy
 import os
 
 
-@pytest.fixture
-def nlp():
-    nlp = spacy.load('fr')
-    french_pos_tagger = POSTagger()
-    nlp.add_pipe(french_pos_tagger, name='POSTagger', after='parser')
-    return nlp
-
-
-@pytest.fixture
-def add_lefff_lemma_nlp(nlp):
-    french_lemmatizer = LefffLemmatizer(after_melt=True)
-    nlp.add_pipe(french_lemmatizer, after='POSTagger')
-    return nlp
-
-
-def test_sentence_one(nlp):
-    tokens = nlp(u"Il y a des Costariciennes.")
+def test_sentence_one(add_lefff_lemma_nlp):
+    tokens = add_lefff_lemma_nlp(u"Il y a des Costariciennes.")
     assert tokens[0]._.melt_tagger == 'CLS'
     assert tokens[1]._.melt_tagger == 'CLO'
     assert tokens[2]._.melt_tagger == 'V'
