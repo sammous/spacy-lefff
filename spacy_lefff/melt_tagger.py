@@ -354,11 +354,13 @@ class MaxEntClassifier:
             os.path.join(
                 dirpath,
                 'weights.npy'),
+            allow_pickle=True,
             encoding='latin1')
         self.bias_weights = np.load(
             os.path.join(
                 dirpath,
                 'bias_weights.npy'),
+            allow_pickle=True,
             encoding='latin1')
         LOGGER.info("  TAGGER: Loading model from %s: done" % dirpath)
         return
