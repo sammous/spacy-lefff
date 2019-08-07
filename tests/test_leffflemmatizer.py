@@ -12,12 +12,6 @@ Link: https://github.com/explosion/spaCy
 /blob/master/spacy/tests/lang/fr/test_lemmatization.py
 """
 
-@pytest.fixture
-def nlp():
-    nlp = spacy.load('fr')
-    french_lemmatizer = LefffLemmatizer()
-    nlp.add_pipe(french_lemmatizer, after='parser')
-    return nlp
 
 def test_lemmatizer_verb(nlp):
     tokens = nlp(u"J'ai une maison à Paris.")
@@ -40,7 +34,11 @@ def test_punctuations(nlp):
     tokens = nlp(u". ?")
     assert tokens[0]._.lefff_lemma == u"."
     assert tokens[1]._.lefff_lemma == u"?"
-
+@pytest.mark.exception
 def test_lemmatizer_exception():
     french_lemmatizer = LefffLemmatizer()
-    assert french_lemmatizer.lemmatize(u"unknow", u"unknown") is None
+    assert french_lemmatizer.lemmatize(u"unknow34", u"unknown") is None
+
+def test_lemmatizer_default():
+    french_lemmatizer = LefffLemmatizer(default=True)
+    assert french_lemmatizer.lemmatize(u"Apple", u"NOUN") == u"apple"

@@ -25,7 +25,7 @@ class LefffLemmatizer(object):
     name = 'lefff_lemma'
 
     def __init__(self, data_dir=DATA_DIR,
-                 lefff_file_name=LEFFF_FILE_NAME, after_melt=False):
+                 lefff_file_name=LEFFF_FILE_NAME, after_melt=False, default=False):
         LOGGER.info('New LefffLemmatizer instantiated.')
         # register your new attribute token._.lefff_lemma
         if not Token.get_extension(self.name):
@@ -35,6 +35,7 @@ class LefffLemmatizer(object):
         # In memory lemma mapping
         self.lemma_dict = {}
         self.after_melt = after_melt
+        self.default = default
         with io.open(os.path.join(data_dir, lefff_file_name),
                      encoding='utf-8') as lefff_file:
             LOGGER.info('Reading lefff data...')
@@ -54,8 +55,13 @@ class LefffLemmatizer(object):
                 if (pos in SPACY_LEFFF_DIC) and (
                         (text, SPACY_LEFFF_DIC[pos]) in self.lemma_dict):
                     return self.lemma_dict[(text, SPACY_LEFFF_DIC[pos])]
-        except BaseException:
+                else:
+                    raise Exception
+        except Exception:
             # if nothing was matched in leff lemmatizer, notify it
+            print('except text', text)
+            if self.default:
+                return text
             return None
 
     def __call__(self, doc):
