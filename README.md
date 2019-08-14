@@ -130,18 +130,18 @@ for d in doc:
 ```
 |Text|spaCy POS|MElt Tag| Lefff Lemma| spaCy tag| spaCy Lemma|
 |-----|-----|-----|-----|-----|-----|
-|Apple| ADJ| NPP| None |ADJ__Number=Sing| Apple|
+|Apple| ADJ| NPP| apple |ADJ__Number=Sing| Apple|
 |cherche |NOUN |V |chercher |NOUN__Number=Sing |chercher|
 |a |AUX |V| avoir| AUX__Mood=Ind Number=Sing Person=3 Tense=Pres VerbForm=Fin |avoir|
-|acheter |VERB |VINF| None| VERB__VerbForm=Inf| acheter|
+|acheter |VERB |VINF| acheter | VERB__VerbForm=Inf| acheter|
 |une |DET |DET |un| DET__Definite=Ind Gender=Fem Number=Sing PronType=Art |un|
-|startup |ADJ| NC |None |ADJ__Number=Sing|startup|
+|startup |ADJ| NC | startup |ADJ__Number=Sing|startup|
 |anglaise |NOUN |ADJ| anglais| NOUN__Gender=Fem Number=Sing| anglais|
-|pour |ADP |P| None| ADP___ |pour|
-|1 |NUM| DET |None |NUM__NumType=Card |1|
+|pour |ADP |P| pour | ADP___ |pour|
+|1 |NUM| DET | 1 |NUM__NumType=Card |1|
 |milliard |NOUN |NC |milliard| NOUN__Gender=Masc Number=Sing NumType=Card| milliard|
-|de |ADP |P| None| ADP___ |de|
-|dollard| NOUN |NC |None |NOUN__Gender=Masc Number=Sing |dollard|
+|de |ADP |P| de | ADP___ |de|
+|dollard| NOUN |NC | dollard |NOUN__Gender=Masc Number=Sing |dollard|
 
 
 We can see that both `cherche` and `startup` where not tagged correctly by the default pos tagger.
