@@ -59,7 +59,6 @@ class LefffLemmatizer(object):
                     raise Exception
         except Exception:
             # if nothing was matched in leff lemmatizer, notify it
-            print('except text', text)
             if self.default:
                 return text
             return None
