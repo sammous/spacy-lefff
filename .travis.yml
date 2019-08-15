@@ -22,3 +22,7 @@ deploy:
   on:
     tags: true
     branch: master
+notifications:
+  email:
+    on_success: never
+    on_failure: always
