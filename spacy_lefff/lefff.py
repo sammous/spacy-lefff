@@ -12,6 +12,11 @@ LEFFF_FILE_NAME = 'lefff-3.4.mlex'
 LOGGER = logging.getLogger(__name__)
 
 
+class POSNotFoundError(KeyError):
+    """Raised when no lemma was found"""
+    pass
+
+
 class LefffLemmatizer(object):
     """
     Lefff Lemmatizer based on Lefff's extension file .mlex
@@ -25,7 +30,9 @@ class LefffLemmatizer(object):
     name = 'lefff_lemma'
 
     def __init__(self, data_dir=DATA_DIR,
-                 lefff_file_name=LEFFF_FILE_NAME, after_melt=False, default=False):
+                 lefff_file_name=LEFFF_FILE_NAME,
+                 after_melt=False,
+                 default=False):
         LOGGER.info('New LefffLemmatizer instantiated.')
         # register your new attribute token._.lefff_lemma
         if not Token.get_extension(self.name):
@@ -56,8 +63,8 @@ class LefffLemmatizer(object):
                         (text, SPACY_LEFFF_DIC[pos]) in self.lemma_dict):
                     return self.lemma_dict[(text, SPACY_LEFFF_DIC[pos])]
                 else:
-                    raise Exception
-        except Exception:
+                    raise POSNotFoundError
+        except:
             # if nothing was matched in leff lemmatizer, notify it
             if self.default:
                 return text
@@ -65,7 +72,8 @@ class LefffLemmatizer(object):
 
     def __call__(self, doc):
         for token in doc:
-            t = token._.melt_tagger.lower() if self.after_melt else token.pos_
+            t = token._.melt_tagger.lower() if self.after_melt \
+                and token._.melt_tagger else token.pos_
             lemma = self.lemmatize(token.text, t)
             token._.lefff_lemma = lemma
         return doc
