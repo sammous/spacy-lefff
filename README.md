@@ -13,7 +13,7 @@ It is still a WIP (work in progress), so the matching might not be perfect but i
 
 ## Installation
 
-`spacy-lefff` requires `spacy` <= v2.0.12.
+`spacy-lefff` requires `spacy` >= v2.1.0.
 
 ```
 pip install spacy-lefff
