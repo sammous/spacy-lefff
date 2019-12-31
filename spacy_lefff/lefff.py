@@ -75,7 +75,7 @@ class LefffLemmatizer(object):
             from_melt = False
             if self.after_melt and token._.melt_tagger:
                 from_melt = True
-                t = token._.melt_tagger.lower() 
+                t = token._.melt_tagger.lower()
             else:
                 t = token.pos_
             lemma = self.lemmatize(token.text, t, from_melt)
