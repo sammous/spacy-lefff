@@ -39,6 +39,13 @@ def test_tagger_breakline(add_lefff_lemma_nlp):
     assert tokens[-1].text == u"\n"
 
 
+def test_tagger_space(add_lefff_lemma_nlp):
+    tokens = add_lefff_lemma_nlp(u" il y a des Françaises.\n")
+    assert tokens[1]._.lefff_lemma == u"cln"
+    assert tokens[1].text == u"il"
+    assert tokens[5]._.lefff_lemma == u"français"
+
+
 def test_load_lexicon():
     french_pos_tagger = POSTagger()
     lex_dict = french_pos_tagger.lex_dict

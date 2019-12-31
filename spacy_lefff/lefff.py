@@ -51,10 +51,10 @@ class LefffLemmatizer(object):
                 self.lemma_dict[(els[0], els[1])] = els[2]
         LOGGER.info('Successfully loaded lefff lemmatizer')
 
-    def lemmatize(self, text, pos):
+    def lemmatize(self, text, pos, from_melt=False):
         text = text.lower() if pos != 'PROPN' else text
         try:
-            if self.after_melt:
+            if from_melt:
                 if pos in MELT_TO_LEFFF_DIC:
                     pos = MELT_TO_LEFFF_DIC[pos]
                 return self.lemma_dict[(text, pos)]
@@ -72,8 +72,12 @@ class LefffLemmatizer(object):
 
     def __call__(self, doc):
         for token in doc:
-            t = token._.melt_tagger.lower() if self.after_melt \
-                and token._.melt_tagger else token.pos_
-            lemma = self.lemmatize(token.text, t)
+            from_melt = False
+            if self.after_melt and token._.melt_tagger:
+                from_melt = True
+                t = token._.melt_tagger.lower() 
+            else:
+                t = token.pos_
+            lemma = self.lemmatize(token.text, t, from_melt)
             token._.lefff_lemma = lemma
         return doc
