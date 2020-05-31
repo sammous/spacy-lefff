@@ -57,7 +57,7 @@ MODELS_DIR = os.path.join(DATA_DIR, PACKAGE, 'models/fr')
 LEXICON_FILE = os.path.join(MODELS_DIR, 'lexicon.json')
 TAG_DICT = os.path.join(MODELS_DIR, 'tag_dict.json')
 
-URL_MODEL = 'https://github.com/sammous/spacy-lefff-model/raw/master/model.tar.gz'
+URL_MODEL = 'https://github.com/sammous/spacy-lefff-model/releases/download/v0.1.0/model.tar.gz'
 
 # extra options dict for feature selection
 feat_select_options = {
