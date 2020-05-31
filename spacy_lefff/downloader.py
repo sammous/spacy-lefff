@@ -23,18 +23,6 @@ class Downloader(object):
         else:
             LOGGER.info('data already set up')
 
-    @staticmethod
-    def get_filename_from_cd(cd):
-        """
-        Get filename from content-disposition
-        """
-        if not cd:
-            return None
-        fname = re.findall('filename="(.+)"', cd)
-        if len(fname) == 0:
-            return None
-        return fname[0]
-
     def _download_data(self):
         LOGGER.info('downloading data for {}...'.format(self.pkg))
         r = requests.get(self.url, stream=True)
@@ -46,8 +34,7 @@ class Downloader(object):
             LOGGER.error("Couldn't fetch model data.")
             raise Exception("Couldn't fetch model data.")
         else:
-            filename = self.get_filename_from_cd(
-                r.headers.get('content-disposition'))
+            filename = 'model.tar.gz'
             path = os.path.join(self.download_dir, filename)
             with open(path, 'wb') as f:
                 for data in r.iter_content(chunk_size=4096):
