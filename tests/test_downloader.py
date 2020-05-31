@@ -14,10 +14,6 @@ from spacy_lefff.melt_tagger import URL_MODEL
 def test_url_model():
     assert requests.get(URL_MODEL).status_code == 200
 
-def test_get_filename_from_cd():
-    cd = 'attachment; filename="model.tar.gz"; filename*=UTF-8''model.tar.gz'
-    assert Downloader.get_filename_from_cd(cd) == 'model.tar.gz'
-
 def _mock_response(
         status=200,
         content="CONTENT",
