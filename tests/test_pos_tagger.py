@@ -45,6 +45,10 @@ def test_tagger_space(add_lefff_lemma_nlp):
     assert tokens[1].text == u"il"
     assert tokens[5]._.lefff_lemma == u"français"
 
+def test_tagger_unknown(add_lefff_lemma_nlp):
+    tokens = add_lefff_lemma_nlp(u"Paris est une ville DEV ce jour.")
+    assert tokens[0]._.lefff_lemma == u"Paris"
+
 
 def test_load_lexicon():
     french_pos_tagger = POSTagger()
