@@ -25,7 +25,7 @@ def setup_package():
         author='sami moustachir',
         author_email='moustachir.sami@gmail.com',
         url='https://github.com/sammous/spacy-lefff',
-        version='0.3.6',
+        version='0.3.7',
         license='MIT',
         packages=find_packages(exclude=['tests']),
         package_data={'spacy_lefff': ['data/*']},
