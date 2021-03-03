@@ -105,7 +105,7 @@ class POSTagger(Downloader):
             self).__init__(
             PACKAGE,
             url=URL_MODEL,
-            download_dir=DATA_DIR)
+            download_dir=data_dir)
         if not tk.get_extension(self.name):
             tk.set_extension(self.name, default=None)
         else:
