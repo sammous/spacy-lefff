@@ -52,10 +52,6 @@ LOGGER = logging.getLogger(__name__)
 
 PACKAGE = 'tagger'
 DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
-MODELS_DIR = os.path.join(DATA_DIR, PACKAGE, 'models/fr')
-
-LEXICON_FILE = os.path.join(MODELS_DIR, 'lexicon.json')
-TAG_DICT = os.path.join(MODELS_DIR, 'tag_dict.json')
 
 URL_MODEL = 'https://github.com/sammous/spacy-lefff-model/releases/latest/download/model.tar.gz'
 
@@ -97,31 +93,39 @@ class POSTagger(Downloader):
     def __init__(
             self,
             data_dir=DATA_DIR,
-            lexicon_file_name=LEXICON_FILE,
-            tag_file_name=TAG_DICT,
+            model_dir_path=None,
+            lexicon_file_path=None,
+            tag_file_path=None,
+            package=PACKAGE,
+            url=URL_MODEL,
             print_probas=False):
         super(
             POSTagger,
             self).__init__(
-            PACKAGE,
-            url=URL_MODEL,
+            package,
+            url=url,
             download_dir=data_dir)
         if not tk.get_extension(self.name):
             tk.set_extension(self.name, default=None)
         else:
             LOGGER.info('Token {} already registered'.format(self.name))
+
+        model_dir_path = model_dir_path if model_dir_path else os.path.join(data_dir, package, 'models/fr')
+        lexicon_file_path = lexicon_file_path if lexicon_file_path else os.path.join(model_dir_path, 'lexicon.json')
+        tag_file_path = tag_file_path if tag_file_path else os.path.join(model_dir_path, 'tag_dict.json')
+
         LOGGER.info("  TAGGER: Loading lexicon...")
-        self.lex_dict = unserialize(lexicon_file_name)
+        self.lex_dict = unserialize(lexicon_file_path)
         LOGGER.info("  TAGGER: Loading tags...")
-        self.tag_dict = unserialize(tag_file_name)
+        self.tag_dict = unserialize(tag_file_path)
         self.classifier = MaxEntClassifier()
         self.cache = {}
-        self.load_model()
+        self._load_model(model_dir_path)
         # print the probability of the tag along to the tag itself
         self.print_probas = print_probas
         return
 
-    def load_model(self, model_path=MODELS_DIR):
+    def _load_model(self, model_path):
         try:
             self.classifier.load(model_path)
         except Exception as e:
