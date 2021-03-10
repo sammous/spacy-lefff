@@ -97,6 +97,7 @@ class POSTagger(Downloader):
     def __init__(
             self,
             data_dir=DATA_DIR,
+            model_path=MODELS_DIR,
             lexicon_file_name=LEXICON_FILE,
             tag_file_name=TAG_DICT,
             print_probas=False):
@@ -116,7 +117,7 @@ class POSTagger(Downloader):
         self.tag_dict = unserialize(tag_file_name)
         self.classifier = MaxEntClassifier()
         self.cache = {}
-        self.load_model()
+        self.load_model(model_path)
         # print the probability of the tag along to the tag itself
         self.print_probas = print_probas
         return
