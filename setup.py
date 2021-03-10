@@ -31,7 +31,7 @@ def setup_package():
         package_data={'spacy_lefff': ['data/*']},
         tests_require=['pytest', 'pytest-cov'],
         install_requires=[
-            'spacy>=2.1.0'],
+            'spacy>=2.1.0,<3.0.0'],
         zip_safe=False,
         classifiers=[
             'Programming Language :: Python',
