@@ -137,7 +137,7 @@ def create_melt_tagger(nlp, name):
  
 nlp = spacy.load('fr_core_news_sm')
 nlp.add_pipe('melt_tagger', after='parser')
-nlp.add_pipe(french_lemmatizer, after='melt_tagger')
+nlp.add_pipe('french_lemmatizer', after='melt_tagger')
 doc = nlp(u"Apple cherche a acheter une startup anglaise pour 1 milliard de dollard")
 for d in doc:
     print(d.text, d.pos_, d._.melt_tagger, d._.lefff_lemma, d.tag_, d.lemma_)
