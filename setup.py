@@ -35,7 +35,6 @@ def setup_package():
         zip_safe=False,
         classifiers=[
             'Programming Language :: Python',
-            'Programming Language :: Python :: 2',
             'Programming Language :: Python :: 3',
             'Operating System :: OS Independent',
             'Development Status :: 3 - Alpha',
