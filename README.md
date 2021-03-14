@@ -90,7 +90,7 @@ You need to install the French spaCy package before : `python -m spacy download 
 import spacy
 from spacy_lefff import LefffLemmatizer, POSTagger
 
-nlp = spacy.load('fr')
+nlp = spacy.load('fr_core_news_sm')
 french_lemmatizer = LefffLemmatizer()
 nlp.add_pipe(french_lemmatizer, name='lefff')
 doc = nlp(u"Apple cherche a acheter une startup anglaise pour 1 milliard de dollard")
@@ -119,7 +119,7 @@ for d in doc:
 import spacy
 from spacy_lefff import LefffLemmatizer, POSTagger
 
-nlp = spacy.load('fr')
+nlp = spacy.load('fr_core_news_sm')
 pos = POSTagger()
 french_lemmatizer = LefffLemmatizer(after_melt=True, default=True)
 nlp.add_pipe(pos, name='pos', after='parser')
