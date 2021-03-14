@@ -92,6 +92,7 @@ You need to install the French spaCy package before : `python -m spacy download 
 ```python
 import spacy
 from spacy_lefff import LefffLemmatizer
+from spacy.language import Language
 
 @Language.factory('french_lemmatizer')
 def create_french_lemmatizer(nlp, name):
@@ -124,6 +125,7 @@ for d in doc:
 ```python
 import spacy
 from spacy_lefff import LefffLemmatizer, POSTagger
+from spacy.language import Language
 
 @Language.factory('french_lemmatizer')
 def create_french_lemmatizer(nlp, name):
