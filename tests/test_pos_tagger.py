@@ -1,7 +1,7 @@
 # coding: utf-8
 
 from spacy_lefff import POSTagger, LefffLemmatizer
-
+from spacy_lefff.melt_tagger import DATA_DIR, PACKAGE
 import pytest
 import spacy
 import os
