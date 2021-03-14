@@ -89,5 +89,5 @@ def test_downloader_data_already_set_up(_tmp_dir, caplog):
     if not os.path.exists(os.path.join(_tmp_dir.strpath, 'test')):
         os.mkdir(os.path.join(_tmp_dir.strpath, 'test'))
     d = Downloader('test', download_dir=_tmp_dir.strpath, url=URL_MODEL)
-    assert caplog.records[0].levelname == 'INFO'
+    assert 'INFO' in caplog.text
     assert 'data already set up' in caplog.text

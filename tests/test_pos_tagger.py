@@ -1,8 +1,7 @@
 # coding: utf-8
 
 from spacy_lefff import POSTagger, LefffLemmatizer
-from spacy_lefff.melt_tagger import MODELS_DIR
-
+from spacy_lefff.melt_tagger import DATA_DIR, PACKAGE
 import pytest
 import spacy
 import os
@@ -49,17 +48,17 @@ def test_tagger_unknown(add_lefff_lemma_nlp):
     add_lefff_lemma_nlp(u"Paris est une ville DEV ce jour.")
     assert True
 
-def test_load_lexicon():
+def test_load_lexicon(model_dir):
     french_pos_tagger = POSTagger()
     lex_dict = french_pos_tagger.lex_dict
-    lexicon = os.path.join(MODELS_DIR, 'lexicon.json')
+    lexicon = os.path.join(model_dir, 'lexicon.json')
     french_pos_tagger.load_lexicon(lexicon)
     assert french_pos_tagger.lex_dict == lex_dict
 
 
-def test_load_tag():
+def test_load_tag(model_dir):
     french_pos_tagger = POSTagger()
     tag_dict = french_pos_tagger.tag_dict
-    tag = os.path.join(MODELS_DIR, 'tag_dict.json')
+    tag = os.path.join(model_dir, 'tag_dict.json')
     french_pos_tagger.load_lexicon(tag)
     assert french_pos_tagger.tag_dict == tag_dict
