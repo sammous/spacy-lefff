@@ -8,14 +8,16 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Set up Python 3.8
+      - name: Set up Python 3.9
         uses: actions/setup-python@v3
         with:
-          python-version: 3.8.0
+          python-version: 3.9
       - name: Linting
-        run: |
-          pip install pre-commit
-          pre-commit run --all-files
+        uses: psf/black@stable
+        with:
+          options: "--check --verbose"
+          src: "./spacy_lefff /tests"
+          version: "22.6"
   Linux:
     needs: Linting
     runs-on: ubuntu-latest

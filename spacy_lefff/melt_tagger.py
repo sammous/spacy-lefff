@@ -32,8 +32,8 @@ import subprocess
 from collections import defaultdict
 import logging
 
-WD_TAG_RE = re.compile(r'^(.+)/([^\/]+)$')
-CAPONLYLINE_RE = re.compile(r'^([^a-z]+)$')
+WD_TAG_RE = re.compile(r"^(.+)/([^\/]+)$")
+CAPONLYLINE_RE = re.compile(r"^([^a-z]+)$")
 number = re.compile("\d")
 hyphen = re.compile("\-")
 equals = re.compile("=")
@@ -50,10 +50,12 @@ from .downloader import Downloader
 
 LOGGER = logging.getLogger(__name__)
 
-PACKAGE = 'tagger'
-DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
+PACKAGE = "tagger"
+DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 
-URL_MODEL = 'https://github.com/sammous/spacy-lefff-model/releases/latest/download/model.tar.gz'
+URL_MODEL = (
+    "https://github.com/sammous/spacy-lefff-model/releases/latest/download/model.tar.gz"
+)
 
 # extra options dict for feature selection
 feat_select_options = {
@@ -70,17 +72,17 @@ feat_select_options = {
     # 'ffthrsld':2, # min feat occ: will discard any features occurring (strictly) less than ffthrsld times in the training data
     # 'norm':0, # normalization (0=none, 1=L1, 2=L2)
     # new default values (Sagot HDR)
-    'win': 2,  # context window size
-    'pwin': 2,  # context window size for predicted tags (left context)
-    'lex_wd': 1,  # lefff current word features
-    'lex_lhs': 1,  # lefff LHS context features
-    'lex_rhs': 1,  # lefff RHS context features
-    'pln': 4,
-    'sln': 5,
-    'rpln': 3,
-    'rsln': 3,
-    'ffthrsld': 1,  # min feat occ: will discard any features occurring (strictly) less than ffthrsld times in the training data
-    'norm': 0,  # normalization (0=none, 1=L1, 2=L2)
+    "win": 2,  # context window size
+    "pwin": 2,  # context window size for predicted tags (left context)
+    "lex_wd": 1,  # lefff current word features
+    "lex_lhs": 1,  # lefff LHS context features
+    "lex_rhs": 1,  # lefff RHS context features
+    "pln": 4,
+    "sln": 5,
+    "rpln": 3,
+    "rsln": 3,
+    "ffthrsld": 1,  # min feat occ: will discard any features occurring (strictly) less than ffthrsld times in the training data
+    "norm": 0,  # normalization (0=none, 1=L1, 2=L2)
 }
 
 ############################ pos_tagger.py ############################
@@ -88,31 +90,39 @@ feat_select_options = {
 
 class POSTagger(Downloader):
 
-    name = 'melt_tagger'
-    
+    name = "melt_tagger"
+
     def __init__(
-            self,
-            data_dir=DATA_DIR,
-            model_dir_path=None,
-            lexicon_file_path=None,
-            tag_file_path=None,
-            package=PACKAGE,
-            url=URL_MODEL,
-            print_probas=False):
-        super(
-            POSTagger,
-            self).__init__(
-            package,
-            url=url,
-            download_dir=data_dir)
+        self,
+        data_dir=DATA_DIR,
+        model_dir_path=None,
+        lexicon_file_path=None,
+        tag_file_path=None,
+        package=PACKAGE,
+        url=URL_MODEL,
+        print_probas=False,
+    ):
+        super(POSTagger, self).__init__(package, url=url, download_dir=data_dir)
         if not tk.get_extension(self.name):
             tk.set_extension(self.name, default=None)
         else:
-            LOGGER.info('Token {} already registered'.format(self.name))
+            LOGGER.info("Token {} already registered".format(self.name))
 
-        model_dir_path = model_dir_path if model_dir_path else os.path.join(data_dir, package, 'models/fr')
-        lexicon_file_path = lexicon_file_path if lexicon_file_path else os.path.join(model_dir_path, 'lexicon.json')
-        tag_file_path = tag_file_path if tag_file_path else os.path.join(model_dir_path, 'tag_dict.json')
+        model_dir_path = (
+            model_dir_path
+            if model_dir_path
+            else os.path.join(data_dir, package, "models/fr")
+        )
+        lexicon_file_path = (
+            lexicon_file_path
+            if lexicon_file_path
+            else os.path.join(model_dir_path, "lexicon.json")
+        )
+        tag_file_path = (
+            tag_file_path
+            if tag_file_path
+            else os.path.join(model_dir_path, "tag_dict.json")
+        )
 
         LOGGER.info("  TAGGER: Loading lexicon...")
         self.lex_dict = unserialize(lexicon_file_path)
@@ -129,28 +139,25 @@ class POSTagger(Downloader):
         try:
             self.classifier.load(model_path)
         except Exception as e:
-            sys.exit(
-                "Error: Failure load POS model from %s (%s)" %
-                (model_path, e))
+            sys.exit("Error: Failure load POS model from %s (%s)" % (model_path, e))
         return
 
-    def tag_token_sequence(
-            self,
-            tokens,
-            feat_options=feat_select_options,
-            beam_size=3):
-        ''' N-best breath search for the best tag sequence for each sentence'''
+    def tag_token_sequence(self, tokens, feat_options=feat_select_options, beam_size=3):
+        """N-best breath search for the best tag sequence for each sentence"""
         # maintain N-best sequences of tagged tokens
         sequences = [([], 0.0)]  # log prob.
         for i, token in enumerate(tokens):
             n_best_sequences = []
             # cache static features
-            cached_inst = Instance(label=tokens[i].label,
-                                   index=i, tokens=tokens,
-                                   feat_selection=feat_options,
-                                   lex_dict=self.lex_dict,
-                                   tag_dict=self.tag_dict,
-                                   cache=self.cache)
+            cached_inst = Instance(
+                label=tokens[i].label,
+                index=i,
+                tokens=tokens,
+                feat_selection=feat_options,
+                lex_dict=self.lex_dict,
+                tag_dict=self.tag_dict,
+                cache=self.cache,
+            )
             cached_inst.get_static_features()
             # get possible tags: union of tags found in tag_dict and
             # lex_dict
@@ -158,18 +165,21 @@ class POSTagger(Downloader):
             wasCap = token.wasCap
             legit_tags1 = self.tag_dict.get(wd, {})
             legit_tags2 = self.lex_dict.get(wd, {})
-#            legit_tags2 = {} # self.lex_dict.get(wd,{})
-#            print >> sys.stderr, "legit_tags1: ", [t for t in legit_tags1]
+            #            legit_tags2 = {} # self.lex_dict.get(wd,{})
+            #            print >> sys.stderr, "legit_tags1: ", [t for t in legit_tags1]
             for j, seq in enumerate(sequences):
                 seq_j, log_pr_j = sequences[j]
                 tokens_j = seq_j + tokens[i:]  # tokens with previous labels
                 # classify token
-                inst = Instance(label=tokens[i].label,
-                                index=i, tokens=tokens_j,
-                                feat_selection=feat_options,
-                                lex_dict=self.lex_dict,
-                                tag_dict=self.tag_dict,
-                                cache=self.cache)
+                inst = Instance(
+                    label=tokens[i].label,
+                    index=i,
+                    tokens=tokens_j,
+                    feat_selection=feat_options,
+                    lex_dict=self.lex_dict,
+                    tag_dict=self.tag_dict,
+                    cache=self.cache,
+                )
                 inst.fv = cached_inst.fv[:]
                 inst.get_sequential_features()
                 label_pr_distrib = self.classifier.class_distribution(inst.fv)
@@ -186,9 +196,11 @@ class POSTagger(Downloader):
                         wasCap=wasCap,
                         label=cl,
                         proba=pr,
-                        label_pr_distrib=label_pr_distrib)
+                        label_pr_distrib=label_pr_distrib,
+                    )
                     n_best_sequences.append(
-                        (seq_j + [labelled_token], log_pr_j + math.log(pr)))
+                        (seq_j + [labelled_token], log_pr_j + math.log(pr))
+                    )
             # sort sequences
             n_best_sequences.sort(key=operator.itemgetter(1))
             # debug_n_best_sequence(n_best_sequences)
@@ -200,51 +212,52 @@ class POSTagger(Downloader):
         return best_sequence
 
     def __call__(
-            self,
-            doc,
-            handle_comments=False,
-            feat_options=feat_select_options,
-            beam_size=3,
-            lowerCaseCapOnly=False,
-            zh_mode=False):
+        self,
+        doc,
+        handle_comments=False,
+        feat_options=feat_select_options,
+        beam_size=3,
+        lowerCaseCapOnly=False,
+        zh_mode=False,
+    ):
         LOGGER.info("  TAGGER: POS Tagging...")
         t0 = time.time()
         # process sentences
         s_ct = 0
-        if (handle_comments):
-            comment_re = re.compile(r'^{.*} ')
-            split_re = re.compile(r'(?<!\}) ')
-            token_re = re.compile(r'(?:{[^}]*} *)?[^ ]+')
+        if handle_comments:
+            comment_re = re.compile(r"^{.*} ")
+            split_re = re.compile(r"(?<!\}) ")
+            token_re = re.compile(r"(?:{[^}]*} *)?[^ ]+")
         else:
-            split_re = re.compile(r' ')
-            token_re = re.compile(r'[^ ]+')
+            split_re = re.compile(r" ")
+            token_re = re.compile(r"[^ ]+")
         line = " ".join([w.text for w in doc])
         wasCapOnly = 0
-        if (lowerCaseCapOnly and len(line) > 10):
+        if lowerCaseCapOnly and len(line) > 10:
             wasCapOnly = CAPONLYLINE_RE.match(line)
-        if (wasCapOnly):
+        if wasCapOnly:
             wasCapOnly = 1
         else:
             wasCapOnly = 0
-        if (wasCapOnly):
+        if wasCapOnly:
             line = line.lower()
-#                LOGGER.info( "CAPONLY: "+line
+        #                LOGGER.info( "CAPONLY: "+line
         wds = []
-#            wds = split_re.split(line)
+        #            wds = split_re.split(line)
         result = token_re.match(line)
-        while (result):
+        while result:
             wds.append(result.group())
             line = token_re.sub("", line, 1)
-            line = line.strip(' \n')
+            line = line.strip(" \n")
             result = token_re.match(line)
         tokens = []
         for wd in wds:
             token = Token(string=wd, wasCap=wasCapOnly)
             tokens.append(token)
-        tagged_tokens = self.tag_token_sequence(tokens,
-                                                feat_options=feat_options,
-                                                beam_size=beam_size)
-        if (self.print_probas):
+        tagged_tokens = self.tag_token_sequence(
+            tokens, feat_options=feat_options, beam_size=beam_size
+        )
+        if self.print_probas:
             tagged_sent = " ".join([tok.__pstr__() for tok in tagged_tokens])
         else:
             tagged_sent = " ".join([tok.__str__() for tok in tagged_tokens])
@@ -269,23 +282,19 @@ class POSTagger(Downloader):
 
 
 class Token:
-
     def __init__(
-            self,
-            string=None,
-            wasCap=0,
-            pos=None,
-            label=None,
-            proba=None,
-            comment=None,
-            label_pr_distrib=[],
-            index=None,
-            position=None):
-        if isinstance(
-                string,
-                tuple) and isinstance(
-                string[2],
-                sxp.Token):  # DAG
+        self,
+        string=None,
+        wasCap=0,
+        pos=None,
+        label=None,
+        proba=None,
+        comment=None,
+        label_pr_distrib=[],
+        index=None,
+        position=None,
+    ):
+        if isinstance(string, tuple) and isinstance(string[2], sxp.Token):  # DAG
             self.string = string[2].forme
             self.position = tuple(string[0:2])
             self.tokobj = string[2]
@@ -304,7 +313,7 @@ class Token:
         self.proba = proba
         self.comment = comment
         self.label_pr_distrib = label_pr_distrib
-        if (self.comment is None):
+        if self.comment is None:
             self.comment = ""
         return
 
@@ -313,7 +322,7 @@ class Token:
         return
 
     def __str__(self):
-        if hasattr(self, 'tokobj'):
+        if hasattr(self, "tokobj"):
             r = ""
             if self.tokobj.commentaire != "":
                 r += "{%s} " % (self.tokobj.commentaire,)
@@ -321,27 +330,27 @@ class Token:
             if self.tokobj.semantique != "":
                 r += "[|%s|] " % (self.tokobj.semantique,)
             return r
-        if (self.wasCap):
+        if self.wasCap:
             return "%s%s/%s" % (self.comment, self.string.upper(), self.label)
         else:
             return "%s%s/%s" % (self.comment, self.string, self.label)
 
     def __pstr__(self):
-        if (self.wasCap):
-            return "%s%s/%s/%s" % (self.comment,
-                                   self.string.upper(),
-                                   self.label,
-                                   self.proba)
+        if self.wasCap:
+            return "%s%s/%s/%s" % (
+                self.comment,
+                self.string.upper(),
+                self.label,
+                self.proba,
+            )
         else:
-            return "%s%s/%s/%s" % (self.comment,
-                                   self.string, self.label, self.proba)
+            return "%s%s/%s/%s" % (self.comment, self.string, self.label, self.proba)
 
 
 ############################ classifier.py ############################
 
 
 class MaxEntClassifier:
-
     def __init__(self):
         self.classes = []
         self.feature2int = {}
@@ -351,35 +360,30 @@ class MaxEntClassifier:
 
     def load(self, dirpath):
         LOGGER.info("  TAGGER: Loading model from %s..." % dirpath)
-        self.classes = unserialize(os.path.join(dirpath, 'classes.json'))
-        self.feature2int = unserialize(
-            os.path.join(dirpath, 'feature_map.json'))
+        self.classes = unserialize(os.path.join(dirpath, "classes.json"))
+        self.feature2int = unserialize(os.path.join(dirpath, "feature_map.json"))
         self.weights = np.load(
-            os.path.join(
-                dirpath,
-                'weights.npy'),
-            allow_pickle=True,
-            encoding='latin1')
+            os.path.join(dirpath, "weights.npy"), allow_pickle=True, encoding="latin1"
+        )
         self.bias_weights = np.load(
-            os.path.join(
-                dirpath,
-                'bias_weights.npy'),
+            os.path.join(dirpath, "bias_weights.npy"),
             allow_pickle=True,
-            encoding='latin1')
+            encoding="latin1",
+        )
         LOGGER.info("  TAGGER: Loading model from %s: done" % dirpath)
         return
 
     def dump(self, dirpath):
         LOGGER.info("  TAGGER (TRAIN): Dumping model in %s..." % dirpath)
-        serialize(self.classes, os.path.join(dirpath, 'classes.json'))
-        serialize(self.feature2int, os.path.join(dirpath, 'feature_map.json'))
-        self.weights.dump(os.path.join(dirpath, 'weights.npy'))
-        self.bias_weights.dump(os.path.join(dirpath, 'bias_weights.npy'))
+        serialize(self.classes, os.path.join(dirpath, "classes.json"))
+        serialize(self.feature2int, os.path.join(dirpath, "feature_map.json"))
+        self.weights.dump(os.path.join(dirpath, "weights.npy"))
+        self.bias_weights.dump(os.path.join(dirpath, "bias_weights.npy"))
         LOGGER.info("  TAGGER (TRAIN): Dumping model in %s: done." % dirpath)
         return
 
     def categorize(self, features):
-        """ sum over feature weights and return class that receives
+        """sum over feature weights and return class that receives
         highest overall weight
         """
         weights = self.bias_weights
@@ -397,8 +401,7 @@ class MaxEntClassifier:
         return self.classes[best_cl_index]
 
     def class_distribution(self, features):
-        """ probability distribution over the different classes
-        """
+        """probability distribution over the different classes"""
         # print >> sys.stderr, "event: %s" % features
         weights = self.bias_weights
         for f in features:
@@ -422,9 +425,16 @@ class MaxEntClassifier:
 
 
 class Instance:
-
-    def __init__(self, index, tokens, label=None, lex_dict={}, tag_dict={},
-                 feat_selection={}, cache={}):
+    def __init__(
+        self,
+        index,
+        tokens,
+        label=None,
+        lex_dict={},
+        tag_dict={},
+        feat_selection={},
+        cache={},
+    ):
         self.label = label
         self.fv = []
         self.feat_selection = feat_selection
@@ -437,8 +447,8 @@ class Instance:
         self.tag_dict = tag_dict
         self.cache = cache  # TODO
         # contexts
-        win = feat_selection.get('win', 2)
-        pwin = feat_selection.get('pwin', 2)
+        win = feat_selection.get("win", 2)
+        pwin = feat_selection.get("pwin", 2)
         self.context_window = win
         self.ptag_context_window = pwin
         self.set_contexts(tokens, index, win, pwin)
@@ -448,7 +458,7 @@ class Instance:
         rwin = win
         lwin = max(win, pwin)
         lconx = toks[:idx][-lwin:]
-        rconx = toks[idx + 1:][:rwin]
+        rconx = toks[idx + 1 :][:rwin]
         self.left_wds = [tok.string for tok in lconx]
         if len(self.left_wds) < lwin:
             self.left_wds = ["<s>"] + self.left_wds
@@ -460,37 +470,33 @@ class Instance:
         self.lex_right_tags = {}
         if self.lex_dict:
             self.lex_left_tags = [
-                "|".join(
-                    list(
-                        self.lex_dict.get(
-                            tok.string, {
-                                "unk": 1}).keys())) for tok in lconx if tok is not None]
+                "|".join(list(self.lex_dict.get(tok.string, {"unk": 1}).keys()))
+                for tok in lconx
+                if tok is not None
+            ]
             self.lex_right_tags = [
-                "|".join(
-                    list(
-                        self.lex_dict.get(
-                            tok.string, {
-                                "unk": 1}).keys())) for tok in rconx if tok is not None]
+                "|".join(list(self.lex_dict.get(tok.string, {"unk": 1}).keys()))
+                for tok in rconx
+                if tok is not None
+            ]
         if self.tag_dict:
             self.train_left_tags = [
-                "|".join(
-                    list(
-                        self.tag_dict.get(
-                            tok.string, {
-                                "unk": 1}).keys())) for tok in lconx if tok is not None]
+                "|".join(list(self.tag_dict.get(tok.string, {"unk": 1}).keys()))
+                for tok in lconx
+                if tok is not None
+            ]
             self.train_right_tags = [
-                "|".join(
-                    list(
-                        self.tag_dict.get(
-                            tok.string, {
-                                "unk": 1}).keys())) for tok in rconx if tok is not None]
+                "|".join(list(self.tag_dict.get(tok.string, {"unk": 1}).keys()))
+                for tok in rconx
+                if tok is not None
+            ]
         return
 
     def add(self, name, key, value=-1):
         if value == -1:
-            f = '%s=%s' % (name, key)
+            f = "%s=%s" % (name, key)
         else:
-            f = '%s=%s=%s' % (name, key, value)
+            f = "%s=%s=%s" % (name, key, value)
         self.fv.append(f)
         return f
 
@@ -499,10 +505,10 @@ class Instance:
         return
 
     def __str__(self):
-        return '%s\t%s' % (self.label, " ".join(self.fv))
+        return "%s\t%s" % (self.label, " ".join(self.fv))
 
     def weighted_str(self, w):
-        return '%s $$$WEIGHT %f\t%s' % (self.label, w, " ".join(self.fv))
+        return "%s $$$WEIGHT %f\t%s" % (self.label, w, " ".join(self.fv))
 
     def get_features(self):
         self.get_static_features()
@@ -510,7 +516,7 @@ class Instance:
         return
 
     def get_sequential_features(self):
-        ''' features based on preceding tagging decisions '''
+        """features based on preceding tagging decisions"""
         prev_labels = self.left_labels
         for n in range(1, self.ptag_context_window + 1):
             if len(prev_labels) >= n:
@@ -518,24 +524,24 @@ class Instance:
                 if n == 1:
                     unigram = prev_labels[-n]
                 else:
-                    unigram = prev_labels[-n:-n + 1][0]
-                self.add('ptag-%s' % n, unigram)
+                    unigram = prev_labels[-n : -n + 1][0]
+                self.add("ptag-%s" % n, unigram)
                 if n > 1:
                     # ngrams where 1 < n < window
                     ngram = prev_labels[:n]
-                    self.add('ptagS-%s' % n, "#".join(ngram))
+                    self.add("ptagS-%s" % n, "#".join(ngram))
         # surronding contexts (left context = predicted tag, right context =
         # lexical info)
-        lex_rhs_feats = self.feat_selection.get('lex_rhs', 0)
+        lex_rhs_feats = self.feat_selection.get("lex_rhs", 0)
         rtags = self.lex_right_tags
         if lex_rhs_feats:
             if (len(prev_labels) >= 1) and (len(rtags) >= 1):
-                self.add('lpred-rlex-surr', prev_labels[-1] + "#" + rtags[0])
+                self.add("lpred-rlex-surr", prev_labels[-1] + "#" + rtags[0])
         return
 
     def get_static_features(self):
-        ''' features that can be computed independently from previous
-        decisions'''
+        """features that can be computed independently from previous
+        decisions"""
         self.get_word_features()
         self.get_conx_features()
         if self.lex_dict:
@@ -546,11 +552,11 @@ class Instance:
         return
 
     def get_word_features(self):
-        ''' features computed based on word form: word form itself,
+        """features computed based on word form: word form itself,
         prefix/suffix-es of length ln: 0 < n < ln, and certain regex
-        patterns'''
-        pln = self.feat_selection.get('pln', 4)  # 5
-        sln = self.feat_selection.get('sln', 4)  # 5
+        patterns"""
+        pln = self.feat_selection.get("pln", 4)  # 5
+        sln = self.feat_selection.get("sln", 4)  # 5
         word = self.word
         index = self.index
         dico = self.lex_dict
@@ -571,31 +577,31 @@ class Instance:
             self.add_cached_features(self.cache[word])
         else:
             # word string
-            self.add('wd', word)
+            self.add("wd", word)
             # suffix/prefix
             wd_ln = len(word)
             if pln > 0:
                 for i in range(1, pln + 1):
                     if wd_ln >= i:
-                        self.add('pref%i' % i, word[:i])
+                        self.add("pref%i" % i, word[:i])
             if sln > 0:
                 for i in range(1, sln + 1):
                     if wd_ln >= i:
-                        self.add('suff%i' % i, word[-i:], val)
+                        self.add("suff%i" % i, word[-i:], val)
         # regex-based features
-        self.add('nb', number.search(word) is not None)
-        self.add('hyph', hyphen.search(word) is not None)
-#        self.add( 'eq', equals.search(word) != None )
+        self.add("nb", number.search(word) is not None)
+        self.add("hyph", hyphen.search(word) is not None)
+        #        self.add( 'eq', equals.search(word) != None )
         uc = upper.search(word)
-        self.add('uc', uc is not None)
-        self.add('niuc', uc is not None and index > 0)
-        self.add('auc', allcaps.match(word) is not None)
+        self.add("uc", uc is not None)
+        self.add("niuc", uc is not None and index > 0)
+        self.add("auc", allcaps.match(word) is not None)
         return
 
     def get_conx_features(self):
-        ''' ngrams word forms in left and right contexts '''
-        rpln = self.feat_selection.get('rpln', 1)
-        rsln = self.feat_selection.get('rsln', 1)
+        """ngrams word forms in left and right contexts"""
+        rpln = self.feat_selection.get("rpln", 1)
+        rsln = self.feat_selection.get("rsln", 1)
         win = self.context_window
         lwds = self.left_wds
         rwds = self.right_wds
@@ -607,8 +613,8 @@ class Instance:
                 if n == 1:
                     left_unigram = lwds[-n]
                 else:
-                    left_unigram = lwds[-n:-n + 1][0]
-                self.add('wd-%s' % n, left_unigram)
+                    left_unigram = lwds[-n : -n + 1][0]
+                self.add("wd-%s" % n, left_unigram)
                 # ngram
                 # if n > 1:
                 #    left_ngram = lwds[-n:]
@@ -616,8 +622,8 @@ class Instance:
             # RHS
             if len(rwds) >= n:
                 # unigram
-                right_unigram = rwds[n - 1:n][0]
-                self.add('wd+%s' % n, right_unigram)
+                right_unigram = rwds[n - 1 : n][0]
+                self.add("wd+%s" % n, right_unigram)
                 if n == 1:
                     # adding light suffix information for the right context
                     wd_ln = len(right_unigram)
@@ -626,11 +632,11 @@ class Instance:
                     if rpln > 0:
                         for i in range(1, rpln + 1):
                             if wd_ln >= i:
-                                self.add('pref+1-%i' % i, right_unigram[:i])
+                                self.add("pref+1-%i" % i, right_unigram[:i])
                     if rsln > 0:
                         for i in range(1, rsln + 1):
                             if wd_ln >= i:
-                                self.add('suff+1-%i' % i, right_unigram[-i:])
+                                self.add("suff+1-%i" % i, right_unigram[-i:])
                 # ngram
                 # if n > 1:
                 #    right_ngram = rwds[:n]
@@ -641,14 +647,14 @@ class Instance:
             for n in range(1, win + 1):
                 surr_ngram = lwds[-n:] + rwds[:n]
                 if len(surr_ngram) == 2 * n:
-                    self.add('surr_wds-%s' % n, "#".join(surr_ngram))
+                    self.add("surr_wds-%s" % n, "#".join(surr_ngram))
 
         return
 
     def _add_lex_features(self, dico, ltags, rtags, feat_suffix):  # for lex name
-        lex_wd_feats = self.feat_selection.get('lex_wd', 0)
-        lex_lhs_feats = self.feat_selection.get('lex_lhs', 0)
-        lex_rhs_feats = self.feat_selection.get('lex_rhs', 0)
+        lex_wd_feats = self.feat_selection.get("lex_wd", 0)
+        lex_lhs_feats = self.feat_selection.get("lex_lhs", 0)
+        lex_rhs_feats = self.feat_selection.get("lex_rhs", 0)
         if lex_wd_feats:
             # ------------------------------------------------------------
             # current word
@@ -660,32 +666,32 @@ class Instance:
                 # try lc'ed version for sent initial words
                 lex_tags = dico.get(word.lower(), {})
             if len(lex_tags) == 0:
-                self.add('%s' % feat_suffix, "unk")
+                self.add("%s" % feat_suffix, "unk")
             elif len(lex_tags) == 1:
                 # unique tag
                 t = list(lex_tags.keys())[0]
-                self.add('%s-u' % feat_suffix, t, lex_tags[t])
+                self.add("%s-u" % feat_suffix, t, lex_tags[t])
             else:
                 # disjunctive tag
-                self.add('%s-disj' % feat_suffix, "|".join(lex_tags))
+                self.add("%s-disj" % feat_suffix, "|".join(lex_tags))
                 # individual tags in disjunction
                 for t in lex_tags:
-                    self.add('%s-in' % feat_suffix, t)
+                    self.add("%s-in" % feat_suffix, t)
                     # ?                   f = u'%s=%s:%s' %(feat_suffix,t,lex_tags[t])
             if uc is not None:
                 uc_lex_tags = dico.get(word.lower(), {})
                 if len(uc_lex_tags) == 0:
-                    self.add('%s' % feat_suffix, "uc-unk")
+                    self.add("%s" % feat_suffix, "uc-unk")
                 elif len(uc_lex_tags) == 1:
                     # unique tag
                     t = list(uc_lex_tags.keys())[0]
-                    self.add('%s-uc-u' % feat_suffix, t, uc_lex_tags[t])
+                    self.add("%s-uc-u" % feat_suffix, t, uc_lex_tags[t])
                 else:
                     # disjunctive tag
-                    self.add('%s-uc-disj' % feat_suffix, "|".join(uc_lex_tags))
+                    self.add("%s-uc-disj" % feat_suffix, "|".join(uc_lex_tags))
                     # individual tags in disjunction
                     for t in uc_lex_tags:
-                        self.add('%s-uc-in' % feat_suffix, t)
+                        self.add("%s-uc-in" % feat_suffix, t)
         # left and right contexts
         win = self.context_window
         for n in range(1, win + 1):
@@ -710,13 +716,12 @@ class Instance:
             if lex_rhs_feats:
                 if len(rtags) >= n:
                     # unigram
-                    right_unigram = rtags[n - 1:n][0]
-                    self.add('%s+%s' % (feat_suffix, n), right_unigram)
+                    right_unigram = rtags[n - 1 : n][0]
+                    self.add("%s+%s" % (feat_suffix, n), right_unigram)
                     # ngram
                     if n > 1:
                         right_ngram = rtags[:n]
-                        self.add('%sS+%s' %
-                                 (feat_suffix, n), "#".join(right_ngram))
+                        self.add("%sS+%s" % (feat_suffix, n), "#".join(right_ngram))
 
         # surronding purely lexical contexts (left context = lexical info, not predicted tag)
         # if lex_lhs_feats and lex_rhs_feats:
@@ -733,22 +738,32 @@ class Instance:
         lex = self.lex_dict
         l_tags = self.lex_left_tags
         r_tags = self.lex_right_tags
-        self._add_lex_features(lex, l_tags, r_tags, feat_suffix='lex')
+        self._add_lex_features(lex, l_tags, r_tags, feat_suffix="lex")
         return
 
     def add_tag_dict_features(self):
         lex = self.tag_dict
         l_tags = self.train_left_tags
         r_tags = self.train_right_tags
-        self._add_lex_features(lex, l_tags, r_tags, feat_suffix='tdict')
+        self._add_lex_features(lex, l_tags, r_tags, feat_suffix="tdict")
         return
+
+
 ############################ utils.py ############################
 
 
 def debug_n_best_sequence(n_best_sequences):
     print("debug")
-    print(("\n".join(["%s/%.2f" % (" ".join([str(t) for t in l]), s)
-                      for l, s in n_best_sequences])).encode("utf8"))
+    print(
+        (
+            "\n".join(
+                [
+                    "%s/%.2f" % (" ".join([str(t) for t in l]), s)
+                    for l, s in n_best_sequences
+                ]
+            )
+        ).encode("utf8")
+    )
     print("----")
 
 
@@ -767,7 +782,7 @@ def word_list(file_path, t=5):
 
 
 def unserialize(filepath, encoding="utf-8"):
-    _file = codecs.open(filepath, 'r', encoding=encoding)
+    _file = codecs.open(filepath, "r", encoding=encoding)
     datastruct = loads(_file.read())
     _file.close()
     return datastruct
