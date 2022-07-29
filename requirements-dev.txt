@@ -4,6 +4,4 @@
 pytest
 pytest-cov
 codecov
-tox-travis
-tox-pip-version
 mock
