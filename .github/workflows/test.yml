@@ -16,7 +16,7 @@ jobs:
         uses: psf/black@stable
         with:
           options: "--check --verbose"
-          src: "./spacy_lefff /tests"
+          src: "./spacy_lefff ./tests"
           version: "22.6"
   Linux:
     needs: Linting
