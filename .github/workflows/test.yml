@@ -58,6 +58,7 @@ jobs:
       run: poetry install --no-interaction
     - name: Test
       run: |
+        poetry env use python${{ matrix.python-version }}
         poetry run spacy download fr_core_news_sm
         poetry run pytest --cov=. --cov-report=xml
     #----------------------------------------------
@@ -110,6 +111,7 @@ jobs:
       run: poetry install --no-interaction
     - name: Test
       run: |
+        poetry env use python${{ matrix.python-version }}
         poetry run spacy download fr_core_news_sm
         poetry run pytest --cov=. --cov-report=xml
     #----------------------------------------------
