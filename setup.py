@@ -25,13 +25,13 @@ def setup_package():
         author='sami moustachir',
         author_email='moustachir.sami@gmail.com',
         url='https://github.com/sammous/spacy-lefff',
-        version='0.4.0',
+        version='0.4.1',
         license='MIT',
         packages=find_packages(exclude=['tests']),
         package_data={'spacy_lefff': ['data/*']},
         tests_require=['pytest', 'pytest-cov'],
         install_requires=[
-            'spacy>=3.0.0,<3.0.5'],
+            'spacy>=3.0.0,<4.0.0'],
         zip_safe=False,
         classifiers=[
             'Programming Language :: Python',
