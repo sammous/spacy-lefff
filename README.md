@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/sammous/spacy-lefff.svg?branch=master)](https://travis-ci.org/sammous/spacy-lefff)[![Coverage Status](https://codecov.io/gh/sammous/spacy-lefff/badge.svg?branch=master)](https://codecov.io/gh/sammous/spacy-lefff?branch=master)[![PyPI version](https://badge.fury.io/py/spacy-lefff.svg)](https://badge.fury.io/py/spacy-lefff)
+[![Build Status](https://github.com/sammous/spacy-lefff/actions/workflows/test.yml/badge.svg?branch=master))](https://github.com/sammous/spacy-lefff/actions/workflows/test.yml?branch=master)[![Coverage Status](https://codecov.io/gh/sammous/spacy-lefff/badge.svg?branch=master)](https://codecov.io/gh/sammous/spacy-lefff?branch=master)[![PyPI version](https://badge.fury.io/py/spacy-lefff.svg)](https://badge.fury.io/py/spacy-lefff)
 
 # spacy-lefff : Custom French POS and lemmatizer based on Lefff for spacy
 
@@ -7,6 +7,8 @@
 _On version [v2.0.17](https://github.com/explosion/spaCy/releases/tag/v2.0.17), spaCy updated French lemmatization_
 
 _As of version *0.4.0* and above, `spacy-lefff` only supports python3.6+ and spacy v3_
+
+_As of version *0.5.0* and above, `spacy-lefff` only supports python3.8+ and spacy v3_
 
 ## Description
 

@@ -1,0 +1,39 @@
+[tool.poetry]
+name = "spacy-lefff"
+version = "0.5.0"
+description = "Custom French POS and lemmatizer based on Lefff for spacy"
+authors = ["Sami Moustachir"]
+license = "MIT License"
+repository = "https://github.com/sammous/spacy-lefff"
+classifiers = [
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "Development Status :: 3 - Alpha",
+    "Natural Language :: English",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Software Development :: Libraries :: Python Modules"
+]
+exclude = ["tests/**/*"]
+[tool.poetry.dependencies]
+python = ">=3.8"
+tqdm = ">=4.11.1"
+pluggy = ">=0.12.0"
+msgpack = ">=0.3.0,<0.6"
+spacy = ">=3.0.0,=<3.4"
+black = "^22.6.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.1.2"
+pytest-cov = "^3.0.0"
+codecov = "^2.1.12"
+mock = "^4.0.3"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+

@@ -7,13 +7,14 @@ import io
 from spacy.tokens import Token
 from .mappings import SPACY_LEFFF_DIC, MELT_TO_LEFFF_DIC
 
-DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
-LEFFF_FILE_NAME = 'lefff-3.4.mlex'
+DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
+LEFFF_FILE_NAME = "lefff-3.4.mlex"
 LOGGER = logging.getLogger(__name__)
 
 
 class POSNotFoundError(KeyError):
     """Raised when no lemma was found"""
+
     pass
 
 
@@ -27,32 +28,36 @@ class LefffLemmatizer(object):
     and Evaluation (LREC 2010), Istanbul, Turkey
     """
 
-    name = 'lefff_lemma'
+    name = "lefff_lemma"
 
-    def __init__(self, data_dir=DATA_DIR,
-                 lefff_file_name=LEFFF_FILE_NAME,
-                 after_melt=False,
-                 default=False):
-        LOGGER.info('New LefffLemmatizer instantiated.')
+    def __init__(
+        self,
+        data_dir=DATA_DIR,
+        lefff_file_name=LEFFF_FILE_NAME,
+        after_melt=False,
+        default=False,
+    ):
+        LOGGER.info("New LefffLemmatizer instantiated.")
         # register your new attribute token._.lefff_lemma
         if not Token.get_extension(self.name):
             Token.set_extension(self.name, default=None)
         else:
-            LOGGER.info('Token {} already registered'.format(self.name))
+            LOGGER.info("Token {} already registered".format(self.name))
         # In memory lemma mapping
         self.lemma_dict = {}
         self.after_melt = after_melt
         self.default = default
-        with io.open(os.path.join(data_dir, lefff_file_name),
-                     encoding='utf-8') as lefff_file:
-            LOGGER.info('Reading lefff data...')
+        with io.open(
+            os.path.join(data_dir, lefff_file_name), encoding="utf-8"
+        ) as lefff_file:
+            LOGGER.info("Reading lefff data...")
             for line in lefff_file:
-                els = line.split('\t')
+                els = line.split("\t")
                 self.lemma_dict[(els[0], els[1])] = els[2]
-        LOGGER.info('Successfully loaded lefff lemmatizer')
+        LOGGER.info("Successfully loaded lefff lemmatizer")
 
     def lemmatize(self, text, pos, from_melt=False):
-        text = text.lower() if pos != 'PROPN' else text
+        text = text.lower() if pos != "PROPN" else text
         try:
             if from_melt:
                 if pos in MELT_TO_LEFFF_DIC:
@@ -60,7 +65,8 @@ class LefffLemmatizer(object):
                 return self.lemma_dict[(text, pos)]
             else:
                 if (pos in SPACY_LEFFF_DIC) and (
-                        (text, SPACY_LEFFF_DIC[pos]) in self.lemma_dict):
+                    (text, SPACY_LEFFF_DIC[pos]) in self.lemma_dict
+                ):
                     return self.lemma_dict[(text, SPACY_LEFFF_DIC[pos])]
                 else:
                     raise POSNotFoundError
