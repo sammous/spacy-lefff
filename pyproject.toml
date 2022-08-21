@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "spacy-lefff"
-version = "0.5.0"
+version = "0.5.1"
 description = "Custom French POS and lemmatizer based on Lefff for spacy"
 authors = ["Sami Moustachir"]
 license = "MIT License"
