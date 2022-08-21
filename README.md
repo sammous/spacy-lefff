@@ -8,6 +8,8 @@ _On version [v2.0.17](https://github.com/explosion/spaCy/releases/tag/v2.0.17), 
 
 _As of version *0.4.0* and above, `spacy-lefff` only supports python3.6+ and spacy v3_
 
+_As of version *0.5.0* and above, `spacy-lefff` only supports python3.8+ and spacy v3_
+
 ## Description
 
 This package allows to bring Lefff lemmatization and part-of-speech tagging to a spaCy custom pipeline.
