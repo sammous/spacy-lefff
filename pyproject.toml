@@ -5,6 +5,7 @@ description = "Custom French POS and lemmatizer based on Lefff for spacy"
 authors = ["Sami Moustachir"]
 license = "MIT License"
 repository = "https://github.com/sammous/spacy-lefff"
+readme = "README.md"
 classifiers = [
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
