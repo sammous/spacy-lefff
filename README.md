@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/sammous/spacy-lefff.svg?branch=master)](https://travis-ci.org/sammous/spacy-lefff)[![Coverage Status](https://codecov.io/gh/sammous/spacy-lefff/badge.svg?branch=master)](https://codecov.io/gh/sammous/spacy-lefff?branch=master)[![PyPI version](https://badge.fury.io/py/spacy-lefff.svg)](https://badge.fury.io/py/spacy-lefff)
+[![Build Status](https://github.com/sammous/spacy-lefff/actions/workflows/test.yml/badge.svg?branch=master))](https://github.com/sammous/spacy-lefff/actions/workflows/test.yml?branch=master)[![Coverage Status](https://codecov.io/gh/sammous/spacy-lefff/badge.svg?branch=master)](https://codecov.io/gh/sammous/spacy-lefff?branch=master)[![PyPI version](https://badge.fury.io/py/spacy-lefff.svg)](https://badge.fury.io/py/spacy-lefff)
 
 # spacy-lefff : Custom French POS and lemmatizer based on Lefff for spacy
 
